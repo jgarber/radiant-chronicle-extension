@@ -1,0 +1,26 @@
+= Chronicle
+
+This extension keeps historical versions of pages in all their states—published, hidden, draft, and reviewed.  The most recent published or hidden version is visible on the public site and the most recent version in any state is visible on the dev site.  Thus, you can work on a page in draft mode, preview exactly how it will look, and then make it live when you are ready
+
+== Features:
+
+* TODO Simple graph showing the change history
+* TODO Roll back to a previous version by creating a new one based on it
+* TODO See what changed in a given version (plain-text diff)
+* TODO Integration with the Dashboard extension so you can see what has changed recently and what pages have unpublished changes (drafts ahead of published versions)
+
+Someday/maybe:
+* Git interface
+
+== Installation
+ 
+(from the radiant application root)
+  
+  git clone git://github.com/jgarber/radiant-chronicle-extension.git vendor/extensions/chronicle
+  rake RAILS_ENV=production db:migrate:extensions
+  rake RAILS_ENV=production radiant:update
+  
+== Acknowledgements
+
+Written by Jason Garber for Eastern Mennonite University
+Thanks to Anton Astashov and Brenton Cheng for the PageVersioning extension, on which Chronicle is based.
