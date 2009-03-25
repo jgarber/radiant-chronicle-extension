@@ -13,6 +13,7 @@ class ChronicleExtension < Radiant::Extension
   # end
   
   def activate
+    Version.send :include, Chronicle::VersionExtensions
     Page.send :include, Chronicle::PageExtensions
     
     # admin.tabs.add "Chronicle", "/admin/chronicle", :after => "Layouts", :visibility => [:all]

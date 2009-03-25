@@ -1,6 +1,8 @@
 = Chronicle
 
-This extension keeps historical versions of pages in all their states—published, hidden, draft, and reviewed.  The most recent published or hidden version is visible on the public site and the most recent version in any state is visible on the dev site.  Thus, you can work on a page in draft mode, preview exactly how it will look, and then make it live when you are ready
+This extension keeps historical versions of pages in all their states—published, hidden, draft, and reviewed.  The most recent published or hidden version is visible in live mode and the most recent version in any state is visible in dev mode.  Thus, you can work on a draft in dev mode, preview exactly how it will look, and then make it live when you are ready.
+
+Many people overlook the dev mode feature of Radiant.  If you don't know about it, see http://wiki.radiantcms.org/How_To_Setup_Dev_Mode.  Understanding it is key to wrapping your head around Chronicle.
 
 == Features:
 
@@ -24,4 +26,4 @@ Someday/maybe:
 == Acknowledgements
 
 Written by Jason Garber for Eastern Mennonite University
-Thanks to Anton Astashov and Brenton Cheng for the PageVersioning extension, on which Chronicle is based.
+Thanks to Anton Astashov and Brenton Cheng for the PageVersioning extension, which provided some "oh, that's how they did it!" for Chronicle

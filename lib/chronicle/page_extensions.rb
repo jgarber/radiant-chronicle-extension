@@ -4,6 +4,7 @@ module Chronicle::PageExtensions
       simply_versioned :keep => 10
       alias_method_chain :update_without_callbacks, :draft_versioning
       alias_method_chain :save_page_parts, :draft_versioning
+      alias_method_chain :find_by_url, :draft_versioning
       alias_method_chain :attributes, :page_parts
       
       # Switch callback chain order so page parts are saved to the version
@@ -35,5 +36,15 @@ module Chronicle::PageExtensions
     attrs = attributes_without_page_parts
     attrs["parts"] = self.parts.map {|p| p.attributes }
     attrs
+  end
+  
+  def find_by_url_with_draft_versioning(url, live = true, clean = true)
+    if live
+      find_by_url_without_draft_versioning(url, live, clean)
+    else
+      found = find_by_url_without_draft_versioning(url, live, clean)
+      found = found.versions.current.instance if found && found.versioned?
+      return found
+    end
   end
 end
