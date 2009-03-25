@@ -32,6 +32,14 @@ describe Page do
     
     @page.versions.current.instance.should == @page
   end
+
+  it "should save slug in the versions table" do
+    @page = Page.create(page_params)
+    @page.slug = "my-page"
+    @page.save
+    
+    @page.versions.current.slug.should == @page.slug
+  end
   
   it "should create a new draft in the main table" do
     @page = Page.create(page_params(:status_id => Status[:draft].id))
