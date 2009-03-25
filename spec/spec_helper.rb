@@ -10,6 +10,8 @@ unless defined? RADIANT_ROOT
   end
 end
 require "#{RADIANT_ROOT}/spec/spec_helper"
+require File.expand_path(File.dirname(__FILE__) + "/chronicle_spec_helpers")
+include ChronicleSpecHelpers
 
 Dataset::Resolver.default << (File.dirname(__FILE__) + "/datasets")
 

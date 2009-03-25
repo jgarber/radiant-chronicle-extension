@@ -8,6 +8,7 @@ This extension keeps historical versions of pages in all their states—publishe
 * TODO Roll back to a previous version by creating a new one based on it
 * TODO See what changed in a given version (plain-text diff)
 * TODO Integration with the Dashboard extension so you can see what has changed recently and what pages have unpublished changes (drafts ahead of published versions)
+* Should be compatible with (and version the extra page attributes of) most extensions!
 
 Someday/maybe:
 * Git interface
