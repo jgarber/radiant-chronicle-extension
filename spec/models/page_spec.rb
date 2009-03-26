@@ -142,6 +142,18 @@ describe Page do
       @home.find_by_url('/another/', false).should == pages(:another)
     end
     
+    it "should find the draft version of a FileNotFound page when in dev mode" do
+      pages(:draft_file_not_found).destroy # This is a different kind of draft
+      
+      page = pages(:file_not_found)
+      page.title = "What are you looking 404?"
+      page.status = Status[:draft]
+      page.save
+      
+      @home.find_by_url('/nothing-doing/').should == pages(:file_not_found)
+      @home.find_by_url('/nothing-doing/', false).title.should == "What are you looking 404?"
+    end
+    
     describe "when changed slug in draft" do
       before(:each) do
         parent = pages(:parent)
@@ -173,9 +185,6 @@ describe Page do
       it "should find a published child at the old url in live mode" do
         @home.find_by_url('/parent/child/').should == pages(:child)
       end
-      
-      it "should find the dev version of a FileNotFound page"
-      
     end
     
   end
