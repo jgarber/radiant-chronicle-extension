@@ -29,7 +29,7 @@ module Chronicle::PageExtensions
       @page_parts = nil
       true
     else
-      update_without_callbacks_without_draft_versioning
+      save_page_parts_without_draft_versioning
     end
   end
   

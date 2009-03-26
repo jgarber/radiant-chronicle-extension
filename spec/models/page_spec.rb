@@ -31,7 +31,33 @@ describe Page do
     }.should create_new_version
     
     @page.current.should == @page
+  end
+  
+  it "should properly save a version when Page is updated as published" do
+    @page = pages(:first)
+    @page.title = "New version"
+  
+    lambda { 
+      @page.save.should == true
+    }.should create_new_version
+  
+    @page.reload
     @page.current.should == @page
+    @page.title.should == "New version"
+  end
+  
+  it "should change the live version when PagePart is updated for a published page" do
+    @page = pages(:first)
+    @page.parts = [{"name"=>"body", "filter_id"=>"", "content"=>"I changed the body!"}]
+  
+    lambda { 
+      @page.save.should == true
+    }.should create_new_version
+  
+    @page.reload
+    @page.parts(true).first.content.should == "I changed the body!"
+    @page.current.should == @page
+    @page.current.parts.first.content.should == "I changed the body!"
   end
 
   it "should save slug in the versions table" do
@@ -75,7 +101,7 @@ describe Page do
       @page.current.title.should == "This is just a draft"
       @page.current.status_id.should == Status[:draft].id
     end
-  
+    
     it "should not change the live version when PagePart is updated as a draft" do
       @page.parts = [{"name"=>"body", "filter_id"=>"", "content"=>"I changed the body!"}]
     
@@ -85,7 +111,7 @@ describe Page do
     
       @page.reload
       @page.status_id.should_not == Status[:draft].id
-      @page.parts.first.content.should_not == "I changed the body!"
+      @page.parts(true).first.content.should_not == "I changed the body!"
     end
   
     it "should properly save a version when a part is updated as a draft" do
