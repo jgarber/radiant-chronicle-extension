@@ -88,7 +88,7 @@ describe Page do
       @page.parts.first.content.should_not == "I changed the body!"
     end
   
-    it "should properly save a version when PagePart is updated as a draft" do
+    it "should properly save a version when a part is updated as a draft" do
       @page.parts = [{"name"=>"body", "filter_id"=>"", "content"=>"I changed the body!"}]
     
       lambda { 
@@ -100,7 +100,7 @@ describe Page do
       @page.current.status_id.should == Status[:draft].id
     end
     
-    it "should have versioned draft child in #current_children" do
+    it "should have a draft of the child in #current_children" do
       @page.save
       
       pages(:home).current_children.should include(@page)
