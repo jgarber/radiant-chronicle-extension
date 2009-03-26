@@ -6,6 +6,7 @@ module Chronicle::PageExtensions
       alias_method_chain :save_page_parts, :draft_versioning
       alias_method_chain :find_by_url, :draft_versioning
       alias_method_chain :simply_versioned_create_version, :extra_version_attributes
+      alias_method_chain :url, :draft_awareness
       
       # Switch callback chain order so page parts are saved to the version
       create_version_callback = @after_save_callbacks.detect {|c| c.method == :simply_versioned_create_version }
@@ -40,13 +41,53 @@ module Chronicle::PageExtensions
     self.versions.current.update_attributes(:slug => slug)
   end
   
+  # Works the same as #find_by_url when in live mode, but in dev mode, finds
+  # the URL using the most current versions (which may be draft versions ahead
+  # of the live version)
   def find_by_url_with_draft_versioning(url, live = true, clean = true)
     if live
       find_by_url_without_draft_versioning(url, live, clean)
     else
-      found = find_by_url_without_draft_versioning(url, live, clean)
-      found = found.versions.current.instance if found && found.versioned?
-      return found
+      return nil if virtual?
+      url = clean_url(url) if clean
+      my_url = self.url(live)
+      if (my_url == url) && (not live or published?)
+        self.current
+      elsif (url =~ /^#{Regexp.quote(my_url)}([^\/]*)/)
+        slug_child = current_children.find {|child| child.slug == $1 }
+        if slug_child
+          found = slug_child.find_by_url(url, live, clean)
+          return found if found
+        end
+        current_children.each do |child|
+          found = child.find_by_url(url, live, clean)
+          return found if found
+        end
+        file_not_found_types = ([FileNotFoundPage] + FileNotFoundPage.descendants)
+        file_not_found_names = file_not_found_types.collect { |x| x.name }
+        condition = (['class_name = ?'] * file_not_found_names.length).join(' or ')
+        condition = "status_id = #{Status[:published].id} and (#{condition})" if live
+        children.find(:first, :conditions => [condition] + file_not_found_names)
+      end
+    end
+  end
+  
+  # The most recent version of the page, possibly ahead of the live version
+  def current
+    self.versioned? ? self.versions.current.instance : self
+  end
+  
+  # The most recent versions of children
+  def current_children
+    children.map {|c| c.current }
+  end
+  
+  # The #url method should be aware that it's a child of a draft
+  def url_with_draft_awareness(live = true)
+    if !live && parent
+      parent.current.child_url(self)
+    else
+      url_without_draft_awareness
     end
   end
   

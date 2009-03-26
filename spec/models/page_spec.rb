@@ -19,7 +19,7 @@ describe Page do
     @page.parts = [{"name"=>"body", "filter_id"=>"", "content"=>"I changed the body!"}]
     @page.save
     
-    @page.versions.current.instance.should == @page.versions.current.instance
+    @page.current.should == @page.current
   end
   
   it "should save versions when updated" do
@@ -30,7 +30,8 @@ describe Page do
       @page.save.should == true
     }.should create_new_version
     
-    @page.versions.current.instance.should == @page
+    @page.current.should == @page
+    @page.current.should == @page
   end
 
   it "should save slug in the versions table" do
@@ -71,8 +72,8 @@ describe Page do
       }.should create_new_version
     
       @page.reload
-      @page.versions.current.instance.title.should == "This is just a draft"
-      @page.versions.current.instance.status_id.should == Status[:draft].id
+      @page.current.title.should == "This is just a draft"
+      @page.current.status_id.should == Status[:draft].id
     end
   
     it "should not change the live version when PagePart is updated as a draft" do
@@ -95,8 +96,14 @@ describe Page do
       }.should create_new_version
     
       @page.reload
-      @page.versions.current.instance.parts.first.content.should == "I changed the body!"
-      @page.versions.current.instance.status_id.should == Status[:draft].id
+      @page.current.parts.first.content.should == "I changed the body!"
+      @page.current.status_id.should == Status[:draft].id
+    end
+    
+    it "should have versioned draft child in #current_children" do
+      @page.save
+      
+      pages(:home).current_children.should include(@page)
     end
   end
 
@@ -104,43 +111,72 @@ describe Page do
     dataset :pages, :file_not_found
     
     before :each do
-      @page = pages(:home)
+      @home = pages(:home)
+      @page = pages(:another)
+      @page.status = Status[:draft]
     end
     
     it "should find a first-version draft in dev mode" do
-      draft_page = @page.find_by_url('/draft/', false)
+      draft_page = @home.find_by_url('/draft/', false)
       draft_page.should == pages(:draft)
       draft_page.should have(0).versions
     end
     
     it 'should not find a first-version draft in live mode' do
-      @page.find_by_url('/draft/').should == pages(:file_not_found)
+      @home.find_by_url('/draft/').should == pages(:file_not_found)
     end
     
     it "should find a second-version draft in dev mode" do
-      page = pages(:another)
-      page.title = "Draft of Another"
-      page.status = Status[:draft]
-      page.save
-      page.should have(1).versions
-      page.reload
-      @draft = page.versions.current.instance
+      @page.title = "Draft of Another"
+      lambda { @page.save }.should create_new_version
+      @draft = @page.current
       
-      @page.find_by_url('/another/', false).should == @draft
+      @home.find_by_url('/another/', false).should == @draft
     end
     
     it 'should not find a second-version draft in live mode' do
-      page = pages(:another)
-      page.title = "Draft of Another"
-      page.status = Status[:draft]
-      page.save
-      page.should have(1).versions
-      page.reload
-      @draft = page.versions.current.instance
+      @page.title = "Draft of Another"
+      @page.save
+      @draft = @page.current
       
-      @page.find_by_url('/another/', false).should == pages(:another)
+      @home.find_by_url('/another/', false).should == pages(:another)
     end
+    
+    describe "when changed slug in draft" do
+      before(:each) do
+        parent = pages(:parent)
+        parent.slug = "parent-draft"
+        parent.status = Status[:draft]
+        parent.save
+      end
+      
+      it "should find the page at the new slug in dev mode" do
+        @home.find_by_url('/parent-draft/', false).should == pages(:parent).current
+      end
 
+      it "should not find the page at the old slug in dev mode" do
+        @home.find_by_url('/parent/', false).should == pages(:draft_file_not_found)
+      end
+      
+      it "should find a published child at the new url in dev mode" do
+        @home.find_by_url('/parent-draft/child/', false).should == pages(:child)
+      end
+
+      it "should not find a published child at the old url in dev mode" do
+        @home.find_by_url('/parent/child/', false).should == pages(:draft_file_not_found)
+      end
+      
+      it "should not find a published child at the new url in live mode" do
+        @home.find_by_url('/parent-draft/child/').should == pages(:file_not_found)
+      end
+      
+      it "should find a published child at the old url in live mode" do
+        @home.find_by_url('/parent/child/').should == pages(:child)
+      end
+      
+      it "should find the dev version of a FileNotFound page"
+      
+    end
     
   end
   
