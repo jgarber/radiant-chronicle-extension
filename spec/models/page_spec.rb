@@ -160,31 +160,53 @@ describe Page do
         parent.slug = "parent-draft"
         parent.status = Status[:draft]
         parent.save
+        @parent_draft = parent.current
+        @parent_draft.slug.should == "parent-draft"
       end
       
       it "should find the page at the new slug in dev mode" do
-        @home.find_by_url('/parent-draft/', false).should == pages(:parent).current
+        @home.find_by_url('/parent-draft/', false).should == @parent_draft
       end
 
       it "should not find the page at the old slug in dev mode" do
         @home.find_by_url('/parent/', false).should == pages(:draft_file_not_found)
       end
       
-      it "should find a published child at the new url in dev mode" do
+      it "should find the published child at the new url in dev mode" do
         @home.find_by_url('/parent-draft/child/', false).should == pages(:child)
       end
 
-      it "should not find a published child at the old url in dev mode" do
+      it "should not find the published child at the old url in dev mode" do
         @home.find_by_url('/parent/child/', false).should == pages(:draft_file_not_found)
       end
       
-      it "should not find a published child at the new url in live mode" do
+      it "should not find the published child at the new url in live mode" do
         @home.find_by_url('/parent-draft/child/').should == pages(:file_not_found)
       end
       
-      it "should find a published child at the old url in live mode" do
+      it "should find the published child at the old url in live mode" do
         @home.find_by_url('/parent/child/').should == pages(:child)
       end
+      
+      describe "and child also has a draft version" do
+        before(:each) do
+          child = pages(:child)
+          child.title = "Child draft"
+          child.status = Status[:draft]
+          child.save
+          @child_draft = child.current
+          @child_draft.title.should == "Child draft"
+        end
+        
+        it "should find the draft child at the new url in dev mode" do
+          @home.find_by_url('/parent-draft/child/', false).should == @child_draft
+        end
+      
+        it "should find the published child at the old url in live mode" do
+          @home.find_by_url('/parent/child/').should == pages(:child)
+        end
+      end
+      
     end
     
   end
