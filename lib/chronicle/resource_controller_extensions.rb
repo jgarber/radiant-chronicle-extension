@@ -1,0 +1,3 @@
+module Chronicle::ResourceControllerExtensions
+  
+end

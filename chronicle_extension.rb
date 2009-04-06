@@ -1,5 +1,5 @@
 # Uncomment this if you reference any of your controllers in activate
-# require_dependency 'application'
+require_dependency 'application'
 
 class ChronicleExtension < Radiant::Extension
   version "1.0"
@@ -15,6 +15,7 @@ class ChronicleExtension < Radiant::Extension
   def activate
     Version.send :include, Chronicle::VersionExtensions
     Page.send :include, Chronicle::PageExtensions
+    Admin::ResourceController.send :include, Chronicle::ResourceControllerExtensions
     
     # admin.tabs.add "Chronicle", "/admin/chronicle", :after => "Layouts", :visibility => [:all]
   end

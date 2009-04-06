@@ -99,6 +99,11 @@ namespace :spec do
   end
 end
 
+require 'cucumber/rake/task'
+Cucumber::Rake::Task.new(:features) do |t|
+  t.cucumber_opts = "--format pretty" # Any valid command line option can go here.
+end
+
 desc 'Generate documentation for the chronicle extension.'
 Rake::RDocTask.new(:rdoc) do |rdoc|
   rdoc.rdoc_dir = 'rdoc'

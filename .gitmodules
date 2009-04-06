@@ -1,3 +1,6 @@
 [submodule "vendor/plugins/simply_versioned"]
 	path = vendor/plugins/simply_versioned
 	url = git://github.com/mmower/simply_versioned.git
+[submodule "vendor/plugins/dataset"]
+	path = vendor/plugins/dataset
+	url = git://github.com/jgarber/dataset.git
