@@ -95,6 +95,6 @@ module Chronicle::PageExtensions
     real_attributes = self.attributes
     write_attribute "parts", self.parts.map {|p| p.attributes }
     block.call
-    self.attributes = real_attributes
+    self.attributes = real_attributes if self.status_id < Status[:published].id
   end
 end

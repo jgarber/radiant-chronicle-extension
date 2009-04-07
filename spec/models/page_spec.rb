@@ -126,6 +126,26 @@ describe Page do
       @page.current.status_id.should == Status[:draft].id
     end
     
+    it "should properly save a version and make it live when a part is updated as published" do
+      @page.parts = [{"name"=>"body", "filter_id"=>"", "content"=>"I changed the body!"}]
+      @page.save
+      
+      draft = @page.current
+      draft.status_id = Status[:published].id
+      content = "Now it's published"
+      draft.parts = [{"name"=>"body", "filter_id"=>"", "content"=>content}]
+      lambda {
+        draft.save.should == true
+      }.should create_new_version
+      
+      @page.reload
+      @page.current.parts.first.content.should == content
+      @page.parts.first.content.should == content
+      @page.current.status_id.should == Status[:published].id
+      @page.status_id.should == Status[:published].id
+    end
+    
+    
     it "should have a draft of the child in #current_children" do
       @page.save
       
@@ -238,6 +258,6 @@ describe Page do
   end
   
   def create_new_version
-    change{ @page.versions.length }.by(1)
+    change{ @page.versions.size }.by(1)
   end
 end
