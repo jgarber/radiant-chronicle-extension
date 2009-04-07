@@ -31,7 +31,7 @@ Object.send(:remove_const, :RADIANT_ROOT)
 
 extension_root = File.expand_path(File.dirname(__FILE__))
 
-task :default => :spec
+task :default => [:spec, :features]
 task :stats => "spec:statsetup"
 
 desc "Run all specs in spec directory"
