@@ -4,6 +4,8 @@ def path_to(page_name)
   when /the homepage/i
     root_path
   
+  when /edit the page/i
+    edit_admin_page_path(@page)
   # Add more page name => path mappings here
   
   else

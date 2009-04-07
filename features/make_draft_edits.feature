@@ -4,15 +4,30 @@ Feature: make draft edits
   In order to experiment and preview pages 
   before they go live
   
-  Scenario: draft version of published
+  Background:
+    Given I am logged in as admin
+  
+  Scenario: save draft version of a published page
     Given I have a published page
     When I edit the page
     And I save it as a draft
     Then the page should be saved
     And not change the live version
     
-  Scenario: draft version of draft
-    Given I have a page with a draft
+  Scenario: save draft version of first-version draft
+    Given I have a draft page
+    When I edit the page
+    And I save it as a draft
+    Then the page should be saved
+    And not change the live version
+    
+  Scenario: edit page with draft
+    Given I have a published page with a draft
+    When I go to edit the page
+    Then the content I am editing should be the draft
+    
+  Scenario: save draft version of page with draft
+    Given I have a published page with a draft
     When I edit the page
     And I save it as a draft
     Then the page should be saved
