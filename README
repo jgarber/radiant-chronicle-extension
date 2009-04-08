@@ -36,6 +36,9 @@ key to wrapping your head around Chronicle.
 * TODO Integration with the Dashboard extension so you can see what has
        changed recently and what pages have unpublished changes (drafts ahead
        of published versions)
+* TODO Lines in the change graph showing ancestry when a page is rolled back
+* TODO Versioning for snippets and layouts as well
+* TODO Versioning including page attachments
 * Should be compatible with (and version the extra page attributes of) most
   extensions!
 
