@@ -16,6 +16,8 @@ class ChronicleExtension < Radiant::Extension
     Version.send :include, Chronicle::VersionExtensions
     Page.send :include, Chronicle::PageExtensions
     Admin::ResourceController.send :include, Chronicle::ResourceControllerExtensions
+    admin.page.edit.add :main, "admin/timeline", :before => "edit_header"
+    Admin::PagesController.send :include, Chronicle::Interface
     
     # admin.tabs.add "Chronicle", "/admin/chronicle", :after => "Layouts", :visibility => [:all]
   end

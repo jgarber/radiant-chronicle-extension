@@ -1,0 +1,40 @@
+#timeline {
+  float: right;
+  display:inline;
+  width: 500px;
+  text-align: right;
+  padding-top: 28px;
+  margin-right: 6px;
+}
+#timeline ol {
+  margin: 0;
+  padding: 0;
+}
+#timeline li {
+  float: right;
+  position: relative;
+  padding: 0;
+  margin: 0;
+  list-style-type: none;
+  width: 26px;
+  height: 12px;
+  line-height: 12px;
+  background: url(/images/admin/line.png) repeat-x 0 4px;
+}
+#timeline li.beginning {
+  width: 40px;
+  background-image: url(/images/admin/line-beginning.png);
+}
+#timeline li .tab {
+  position: absolute;
+  right: -8px;
+  top: -22px;
+}
+#timeline li img {
+  padding: 0;
+  margin: 0;
+  padding-left: 1px;
+  padding-right: 1px;
+  background-color: #fff;
+  vertical-align: top;
+}
