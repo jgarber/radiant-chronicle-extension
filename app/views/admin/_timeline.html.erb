@@ -1,9 +1,21 @@
 <div id="timeline">
   <ol>
     <li id="this"><img src="/images/admin/this.png" /></li>
-    <li id="version-24"><img src="/images/admin/draft.png" /><img class="tab" id="live" src="/images/admin/dev.png" /></li>
+    <li id="version-24"><img src="/images/admin/draft.png" id="version-24-icon" /><img class="tab" id="live" src="/images/admin/dev.png" /></li>
     <li id="version-23"><img src="/images/admin/published.png" /><img class="tab" id="live" src="/images/admin/live.png" /></li>
     <li id="version-22"><img src="/images/admin/reviewed.png" /></li>
     <li id="version-21" class="beginning"><img src="/images/admin/hidden.png" /><img class="tab" id="live" src="/images/admin/dev-and-live.png" /></li>
   <ol>
 </div>
+<script type="text/javascript">
+  new HelpBalloon({
+    content: 'This is the content.',
+    icon: $('version-24-icon'),
+    balloonPrefix: '/images/admin/balloon-',
+    button: null,
+    contentMargin: 50,
+    autoHideTimeout: 2000,
+    showEffect: Effect.Appear,
+    hideEffect: Effect.Fade
+  });
+</script>
