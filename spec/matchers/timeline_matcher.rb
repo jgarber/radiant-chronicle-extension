@@ -10,7 +10,7 @@ module Webrat
       end
       
       def as(status)
-        @status_selector = HaveSelector.new("img", :id=>"version-#{@version_number}-icon",   :src=>"/images/admin/#{status.to_s}.png")
+        @status = status
         self
       end
       
@@ -18,9 +18,14 @@ module Webrat
         @block ||= block
         matched = matches(stringlike)
         
-        matched.any? && 
-          (!@status_selector || @status_selector.matches?(matched)) && 
-          (!@block || @block.call(matched))
+        @block.call(matched) if @block
+        status_matcher(matched) if @status
+        
+        matched.any?
+      end
+      
+      def status_matcher(stringlike)
+        stringlike.should HaveSelector.new("img", :id=>"version-#{@version_number}-icon",   :src=>"/images/admin/#{@status.to_s}.png")
       end
       
     end

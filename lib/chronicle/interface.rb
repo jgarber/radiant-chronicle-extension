@@ -3,6 +3,7 @@ module Chronicle::Interface
     base.class_eval {
       before_filter :add_chronicle_assets, :only => [:edit, :new]
       include InstanceMethods
+      helper 'admin/timeline'
     }
   end
   

@@ -38,7 +38,7 @@ module Chronicle::PageExtensions
       simply_versioned_create_version_without_extra_version_attributes
     end
     
-    self.versions.current.update_attributes(:slug => slug)
+    self.versions.current.update_attributes(:slug => slug, :status_id => status_id)
   end
   
   # Works the same as #find_by_url when in live mode, but in dev mode, finds

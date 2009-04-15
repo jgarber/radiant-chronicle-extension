@@ -50,9 +50,27 @@ describe Admin::TimelineHelper do
     end
   end
   
-  def have_marker(type)
-    type = type.to_s
-    have_selector("img", :class=>"marker", :id=>"#{type}-marker",   :src=>"/images/admin/#{type}.png" )
+  it "should not put a marker on a published version that is not current live" do
+    page = pages(:published_with_many_versions)
+    helper.timeline(page).should have_version(1).as(:published) do |li|
+      li.should_not have_marker
+    end
+  end
+  
+  it "should not put a marker on a draft version that is not current dev" do
+    page = pages(:draft_with_many_versions)
+    helper.timeline(page).should have_version(1).as(:draft) do |li|
+      li.should_not have_marker
+    end
+  end
+  
+  def have_marker(type=nil)
+    opts = {:class=>"marker"}
+    if type
+      type = type.to_s
+      opts.merge! :id=>"#{type}-marker", :src=>"/images/admin/#{type}.png"
+    end
+    have_selector("img", opts)
   end
 
 end
