@@ -3,6 +3,16 @@ require File.dirname(__FILE__) + '/../spec_helper'
 describe Version do
   dataset :versions
   
+  it "should be only visible in dev mode when status is draft" do
+    version = pages(:draft).versions.current
+    version.should be_only_visible_in_dev_mode
+  end
+  
+  it "should be only visible in dev mode when status is reviewed" do
+    version = pages(:reviewed).versions.current
+    version.should be_only_visible_in_dev_mode
+  end
+  
   it "should respond to #instance" do
     version = pages(:page_with_draft).versions.current
     version.instance.should be_a(Page)

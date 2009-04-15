@@ -8,6 +8,11 @@ describe Admin::TimelineHelper do
     included_modules.should include(Admin::TimelineHelper)
   end
   
+  it "should have a node for the version I am currently editing" do
+    page = pages(:draft)
+    helper.timeline(page).should have_selector("li", :id=>"this")
+  end
+  
   it "should produce a dev flag on a first-version draft" do
     page = pages(:draft)
     helper.timeline(page).should have_version(1).as(:draft) do |li|
@@ -62,6 +67,10 @@ describe Admin::TimelineHelper do
     helper.timeline(page).should have_version(1).as(:draft) do |li|
       li.should_not have_marker
     end
+  end
+  
+  it "should make the line fade out when the timeline does not begin with version 1" do
+    pending # timeline limit is not implemented yet, but class="beginning" on the LI will make the line fade
   end
   
   def have_marker(type=nil)

@@ -1,2 +1,3 @@
 * Don't make a new version if all that changed was the status. 
   (or do we want this? it would mess up git SHAs if we ever added a git interface)
+* Limit the number of versions visible in the timeline

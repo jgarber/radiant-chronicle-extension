@@ -3,24 +3,42 @@ module Admin::TimelineHelper
     versions = page.versions
     content_tag(:div, :id=>"timeline") do
       content_tag(:ol) do
+        this_version_node +
         page.versions.collect do |version|
-          version_id = "version-#{version.number}"
-          content_tag(:li, :id => version_id) do
-            tags = []
-            tags << tag(:img, :id=>"#{version_id}-icon", :src=>"/images/admin/#{version.instance.status.name.downcase}.png")
-            if (version.instance.status_id < Status[:published].id) && version.current?
-              tags << tag(:img, :class=>"marker", :id=>"dev-marker",   :src=>"/images/admin/dev.png")
-            else
-              if version.current?
-                tags << tag(:img, :class=>"marker", :id=>"dev-and-live-marker",   :src=>"/images/admin/dev-and-live.png")
-              elsif version.current_live?
-                tags << tag(:img, :class=>"marker", :id=>"live-marker",   :src=>"/images/admin/live.png")
-              end
-            end
-            tags.join
-          end
+          version_node(version)
         end.join
       end
+    end
+  end
+  
+  def version_node(version)
+    content_tag(:li, :id => "version-#{version.number}") do
+      tags = [ version_icon(version) ]
+      case
+      when version.only_visible_in_dev_mode? && version.current?
+        tags << marker(:dev)
+      when version.current?
+        tags << marker("dev-and-live")
+      when version.current_live?
+        tags << marker(:live)
+      end
+      tags.join
+    end
+    
+  end
+  
+  def marker(type)
+    type = type.to_s
+    tag(:img, :class=>"marker", :id=>"#{type}-marker",   :src=>"/images/admin/#{type}.png")
+  end
+  
+  def version_icon(version)
+    tag(:img, :id=>"version-#{version.number}-icon", :src=>"/images/admin/#{version.instance.status.name.downcase}.png")
+  end
+  
+  def this_version_node
+    content_tag(:li, :id => "this") do
+      tag(:img, :id=>"this-icon", :src=>"/images/admin/this.png")
     end
   end
 end

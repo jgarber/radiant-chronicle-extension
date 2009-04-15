@@ -2,9 +2,9 @@ module Webrat
   module Matchers
     
     class TimelineTags < HaveSelector
-      def initialize(version_number = nil, &block)
+      def initialize(version_number = nil, options = {}, &block)
         @expected = "li"
-        @options  = {:id=>"version-#{version_number.to_s}"}
+        @options  = options.merge(:id=>"version-#{version_number.to_s}")
         @block    = block
         @version_number = version_number
       end
@@ -32,8 +32,8 @@ module Webrat
     
     # timeline.should have_version(version_number)
     # timeline.should have_version(version_number).as(status)
-    def have_version(version_number)
-      TimelineTags.new(version_number)
+    def have_version(version_number, options={})
+      TimelineTags.new(version_number, options)
     end
 
   end

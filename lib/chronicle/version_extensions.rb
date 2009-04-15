@@ -22,4 +22,8 @@ module Chronicle::VersionExtensions
     current_live = versionable.versions.find(:first, :conditions => "status_id >= #{Status[:published].id}", :order => 'number DESC')
     current_live && (current_live.number == self.number)
   end
+  
+  def only_visible_in_dev_mode?
+    status_id < Status[:published].id
+  end
 end
