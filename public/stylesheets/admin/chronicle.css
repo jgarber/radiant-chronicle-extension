@@ -25,7 +25,7 @@
   width: 40px;
   background-image: url(/images/admin/line-beginning.png);
 }
-#timeline li .tab {
+#timeline li .marker {
   position: absolute;
   right: -8px;
   top: -22px;

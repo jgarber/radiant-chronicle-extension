@@ -13,4 +13,7 @@ module Chronicle::VersionExtensions
     obj
   end
   
+  def current?
+    versionable.versions.current.number == self.number
+  end
 end
