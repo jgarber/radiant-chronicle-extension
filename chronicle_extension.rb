@@ -6,11 +6,11 @@ class ChronicleExtension < Radiant::Extension
   description "Describe your extension here"
   url "http://yourwebsite.com/chronicle"
   
-  # define_routes do |map|
-  #   map.namespace :admin, :member => { :remove => :get } do |admin|
-  #     admin.resources :chronicle
-  #   end
-  # end
+  define_routes do |map|
+    map.namespace :admin, :member => { :remove => :get } do |admin|
+      admin.resources :versions
+    end
+  end
   
   def activate
     Version.send :include, Chronicle::VersionExtensions

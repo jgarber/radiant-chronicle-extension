@@ -1,0 +1,8 @@
+%span#version-number
+  = "Version " + @version.number.to_s
+%span#version-author
+  = @version.instance.updated_by.name
+%span#version-updated-at
+  = @version.instance.updated_at.to_formatted_s(:short)
+%span#version-status
+  = @version.instance.status.name

@@ -4,7 +4,7 @@ module Webrat
     class TimelineTags < HaveSelector
       def initialize(version_number = nil, options = {}, &block)
         @expected = "li"
-        @options  = options.merge(:id=>"version-#{version_number.to_s}")
+        @options  = options.merge(:id => "version-#{version_number.to_s}")
         @block    = block
         @version_number = version_number
       end
@@ -25,7 +25,7 @@ module Webrat
       end
       
       def status_matcher(stringlike)
-        stringlike.should HaveSelector.new("img", :id=>"version-#{@version_number}-icon",   :src=>"/images/admin/#{@status.to_s}.png")
+        stringlike.should HaveSelector.new("img", :id=>"version-#{@version_number}-icon",   :src=>"/images/admin/#{@status.to_s}.png", :class=>"timeline-icon")
       end
       
     end

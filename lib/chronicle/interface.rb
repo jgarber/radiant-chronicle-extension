@@ -3,7 +3,9 @@ module Chronicle::Interface
     base.class_eval {
       before_filter :add_chronicle_assets, :only => [:edit, :new]
       include InstanceMethods
-      helper 'admin/timeline'
+      helper 'admin/timeline' do
+        alias_method_chain :page_edit_javascripts, :timeline_bubbles
+      end
     }
   end
   
