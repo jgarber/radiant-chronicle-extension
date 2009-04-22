@@ -2,7 +2,8 @@
   %span.version-number
     = "Version " + @version.number.to_s
   %span.version-updated-at
-    = @version.instance.updated_at.to_formatted_s(:short)
+    %abbr{:title => @version.instance.updated_at.getlocal.to_formatted_s(:long)}
+      = time_ago_in_words(@version.instance.updated_at) + " ago"
   %span.version-status
     = @version.instance.status.name
   %span.version-author
