@@ -1,5 +1,5 @@
 class VersionsDataset < Dataset::Base
-  uses :home_page
+  uses :home_page, :users
   
   def load
     create_versioned_page "Published"
@@ -17,10 +17,15 @@ class VersionsDataset < Dataset::Base
       create_version
       create_version
     end
+    create_versioned_page "Updated by existing" do
+      UserActionObserver.current_user = users(:existing)
+      create_version
+    end
   end
   
   helpers do
     def create_versioned_page(name, attributes={}, &block)
+      UserActionObserver.current_user = users(:admin)
       create_page(name, attributes) do
         create_version
         block.call if block_given?
@@ -29,6 +34,7 @@ class VersionsDataset < Dataset::Base
     def create_version(attributes={})
       page = Page.find(@current_page_id)
       page.update_attributes(attributes)
+      page
     end
   end
   

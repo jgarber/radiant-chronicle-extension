@@ -50,7 +50,6 @@ describe Version do
   end
   
   describe "#saved_by" do
-    dataset :users
     it "should return updated_by from the instance" do
       page = stub("Page")
       page.stub!(:updated_by).and_return users(:admin)

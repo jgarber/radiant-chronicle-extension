@@ -1,16 +1,11 @@
 require File.dirname(__FILE__) + '/../../../spec_helper'
 
 describe "/admin/versions/show" do
-  dataset :users_and_pages
+  dataset :versions
   
   describe "first version" do
     before do
-      page = pages(:first)
-      page.stub!(:updated_by).and_return nil
-      page.stub!(:created_by).and_return users(:admin)
-      @version = Version.new
-      @version.stub!(:number).and_return 2
-      @version.stub!(:instance).and_return page
+      @version = pages(:updated_by_existing).versions.first
       assigns[:version] = @version
       render 'admin/versions/show'
     end
@@ -23,11 +18,8 @@ describe "/admin/versions/show" do
 
   describe "second version" do
     before do
-      page = pages(:first)
-      page.updated_at = Time.local(2009,1,1,8,57)
-      @version = Version.new
-      @version.stub!(:number).and_return 2
-      @version.stub!(:instance).and_return page
+      @version = pages(:updated_by_existing).versions.current
+      @version.instance.stub!(:updated_at).and_return Time.local(2009,1,1,8,57)
       assigns[:version] = @version
       render 'admin/versions/show'
     end 
@@ -37,7 +29,7 @@ describe "/admin/versions/show" do
     end
   
     it "should display the author" do
-      response.should have_selector("span.version-author", :content => "Admin")
+      response.should have_selector("span.version-author", :content => "Existing")
     end
   
     it "should display the update time" do
