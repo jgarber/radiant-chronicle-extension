@@ -3,8 +3,8 @@ class Admin::VersionsController < ApplicationController
     @version = Version.find(params[:id])
     respond_to do |wants|
       wants.html
-      wants.xml
-      wants.js
+      # wants.xml
+      # wants.js
     end
   end
 

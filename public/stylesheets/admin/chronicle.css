@@ -42,3 +42,11 @@
   vertical-align: top;
   cursor: pointer;
 }
+.version-info .version-number, .version-info .version-status {
+  float: left;
+  clear: left;
+}
+.version-info .version-updated-at, .version-info .version-author {
+  float: right;
+  clear: right;
+}

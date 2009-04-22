@@ -2,23 +2,18 @@ module Admin::TimelineHelper
   
   def page_edit_javascripts_with_timeline_bubbles
     page_edit_javascripts_without_timeline_bubbles + <<-CODE
-      function attach_help_bubbles_to_timeline_nodes(timeline) {
-        timeline.select('img.timeline-icon').each(function(node) {
-          new HelpBalloon({
-            dataURL: '#{formatted_admin_version_path(:format => 'xml', :id => 1)}',
-            icon: node,
-            balloonPrefix: '/images/admin/balloon-',
-            button: '/images/admin/button.png',
-            contentMargin: 40,
-            autoHideTimeout: 2000,
-            showEffect: Effect.Appear,
-            hideEffect: Effect.Fade
-          });
+      function attach_help_bubble_to_timeline_version_node(node, data_url) {
+        new HelpBalloon({
+          dataURL: data_url,
+          icon: node,
+          balloonPrefix: '/images/admin/balloon-',
+          button: '/images/admin/button.png',
+          contentMargin: 40,
+          showEffect: Effect.Appear,
+          hideEffect: Effect.Fade,
+          autoHideTimeout: 2000
         });
       }
-      document.observe("dom:loaded", function() {
-        attach_help_bubbles_to_timeline_nodes($('timeline'));
-      });
     CODE
   end
   
@@ -37,6 +32,7 @@ module Admin::TimelineHelper
   def version_node(version)
     content_tag(:li, :id => "version-#{version.number}") do
       tags = [ version_icon(version) ]
+      tags << version_tooltip(version)
       case
       when version.only_visible_in_dev_mode? && version.current?
         tags << marker(:dev)
@@ -63,5 +59,11 @@ module Admin::TimelineHelper
     content_tag(:li, :id => "this") do
       tag(:img, :id=>"this-icon", :src=>"/images/admin/this.png", :class=>"timeline-icon")
     end
+  end
+  
+  def version_tooltip(version)
+    node = "$('version-#{version.number}-icon')";
+    data_url = admin_version_path(version)
+    javascript_tag "attach_help_bubble_to_timeline_version_node(#{node}, '#{data_url}');"
   end
 end
