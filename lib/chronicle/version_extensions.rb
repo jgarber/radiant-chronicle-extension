@@ -16,6 +16,10 @@ module Chronicle::VersionExtensions
     @instance
   end
   
+  def saved_by
+    instance.updated_by || instance.created_by
+  end
+  
   def current?
     versionable.versions.current.number == self.number
   end

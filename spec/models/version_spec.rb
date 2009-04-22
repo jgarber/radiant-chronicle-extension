@@ -31,7 +31,7 @@ describe Version do
     version.current_dev?.should == version.current?
   end
   
-  it "should be current_live when " do
+  it "should be current_live when the latest published version" do
     version = pages(:page_with_draft).versions.first
     version.number.should == 1
     version.should be_current_live
@@ -48,4 +48,27 @@ describe Version do
     version.number.should == 3
     version.should be_current_live
   end
+  
+  describe "#saved_by" do
+    dataset :users
+    it "should return updated_by from the instance" do
+      page = stub("Page")
+      page.stub!(:updated_by).and_return users(:admin)
+      version = pages(:published).versions.current
+      version.stub!(:instance).and_return page
+      
+      version.saved_by.should == users(:admin)
+    end
+
+    it "should return created_by from the instance when no updated_by" do
+      page = stub("Page")
+      page.stub!(:updated_by).and_return nil
+      page.stub!(:created_by).and_return users(:admin)
+      version = pages(:published).versions.current
+      version.stub!(:instance).and_return page
+      
+      version.saved_by.should == users(:admin)
+    end
+  end
+    
 end
