@@ -7,6 +7,9 @@ class VersionsDataset < Dataset::Base
     create_versioned_page "Page with Draft" do
       create_version :status_id => Status[:draft].id
     end
+    create_versioned_page "Page with Reviewed" do
+      create_version :status_id => Status[:reviewed].id
+    end
     create_versioned_page "Reviewed", :status_id => Status[:reviewed].id
     create_versioned_page "Hidden", :status_id => Status[:hidden].id
     create_versioned_page "Published with many versions" do

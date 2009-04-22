@@ -50,3 +50,12 @@
   float: right;
   clear: right;
 }
+td.status span.status {
+  white-space: nowrap;
+}
+td.status span.status.draft-status {
+  color: #c00;
+}
+td.status span.status.reviewed-status {
+  color: #9eb3bf;
+}
