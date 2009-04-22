@@ -11,6 +11,7 @@ describe Admin::VersionsController do
     it " should be successful" do
       get 'show', :id => pages(:published).versions.first.id
       response.should be_success
+      response.layout.should be_nil
     end
   end
 end
