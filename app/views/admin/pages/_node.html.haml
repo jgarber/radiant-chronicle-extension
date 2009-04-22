@@ -13,10 +13,12 @@
     - node.status_column do
       - unless simple
         %td.status{:class => "#{page.status.name.downcase}-status"}
+          -# ** Chronicle extension modifications begin
           = page.status.name
           - if page.status_id >= Status[:published].id && page.current.status_id < Status[:published].id
             %span.status{:class => "#{page.current.status.name.downcase}-status"}
               = " + " + page.current.status.name
+          -# ** Chronicle extension modifications end
     - node.add_child_column do
       - unless simple
         %td.add-child= link_to image('add-child', :alt => 'add child'), new_admin_page_child_url(page)
