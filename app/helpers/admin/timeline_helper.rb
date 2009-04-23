@@ -58,12 +58,28 @@ module Admin::TimelineHelper
   def this_version_node
     content_tag(:li, :id => "this") do
       tag(:img, :id=>"this-icon", :src=>"/images/admin/this.png", :class=>"timeline-icon")
-    end
+    end + this_version_tooltip
   end
   
   def version_tooltip(version)
     node = "$('version-#{version.number}-icon')";
     data_url = admin_version_path(version)
     javascript_tag "attach_help_bubble_to_timeline_version_node(#{node}, '#{data_url}');"
+  end
+  
+  def this_version_tooltip
+    node = "$('this-icon')";
+    javascript_tag <<-CODE
+      new HelpBalloon({
+        content: "You are currently editing this version.",
+        icon: #{node},
+        balloonPrefix: '/images/admin/balloon-',
+        button: '/images/admin/button.png',
+        contentMargin: 40,
+        showEffect: Effect.Appear,
+        hideEffect: Effect.Fade,
+        autoHideTimeout: 2000
+      });
+    CODE
   end
 end
