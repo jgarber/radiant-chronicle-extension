@@ -4,9 +4,7 @@ module Chronicle::Interface
       before_filter :add_chronicle_stylesheet, :only => [:index, :edit, :new]
       before_filter :add_chronicle_javascript, :only => [:edit, :new]
       include InstanceMethods
-      helper 'admin/timeline' do
-        alias_method_chain :page_edit_javascripts, :timeline_bubbles
-      end
+      helper 'admin/timeline'
     }
   end
   
@@ -16,6 +14,7 @@ module Chronicle::Interface
     end
     def add_chronicle_javascript
       include_javascript 'admin/HelpBalloon'
+      include_javascript 'admin/chronicle'
     end
   end
 end
