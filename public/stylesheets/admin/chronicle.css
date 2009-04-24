@@ -73,23 +73,80 @@ td.status span.status.reviewed-status {
   border-width: 1px;
   padding: 15px 20px;
 }
-#content #diff #pages .page.added {
+#diff span.to,
+#content #diff #pages .page.added,
+#version-diff-popup #diff #pages .page.added {
   background-color: #DDFFDD;
 }
-#content #diff #pages .page.deleted {
+#diff span.from,
+#content #diff #pages .page.deleted,
+#version-diff-popup #diff #pages .page.deleted {
   background-color: #FFDDDD;
 }
-#content #diff #pages .page h4 {
-  font-weight: bold;
+#content #diff h3 {
+  margin-bottom: 6px;
 }
-#content #diff pre {
+#content #diff h4,
+#version-diff-popup #diff h4 {
+  font-weight: bold;
+  margin: 0;
+}
+#content #diff pre,
+#version-diff-popup #diff pre {
   margin: 1em 0 0;
 }
-#content #diff ins {
+#content #diff ins,
+#version-diff-popup #diff ins {
   background-color: #99EE99;
   text-decoration: none;
 }
-#content #diff del {
+#content #diff del,
+#version-diff-popup #diff del {
   background-color: #EE9999;
   text-decoration: line-through;
+}
+/*** Popup diff ***/
+#version-diff {
+  overflow: auto;
+  max-height: 500px;
+}
+#version-diff-popup p {
+  margin-top: 0;
+}
+#version-diff-popup .form-area h3 {
+  font-size:100%;
+  margin-bottom:.25em;
+}
+#version-diff-popup #diff{
+  font-size:100%;
+}
+#version-diff-popup #diff #pages .page {
+  padding: 10px 15px;
+  border: 1px solid #DFD3C3;
+}
+#version-diff-popup .form-area .row p {
+  float:left;
+  margin: 1em 2em 1em 0;\
+}
+#version-diff-popup label {
+  font-weight: bold;
+}
+#version-diff-popup table.fieldset {
+  border-bottom:1px solid #DFD3C3;
+  margin-bottom:1em;
+  width:100%;
+}
+#version-diff-popup table.fieldset th.label {
+  padding-right:8px;
+  text-align:left;
+  vertical-align:top;
+  white-space:nowrap;
+  width:1%;
+}
+#version-diff-popup table.fieldset td,
+#version-diff-popup table.fieldset th {
+  background-color:white;
+  border-top:1px solid #DFD3C3;
+  color:inherit;
+  padding:4px;
 }

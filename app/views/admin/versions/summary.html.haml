@@ -2,7 +2,7 @@
   %span.version-number
     = "Version " + @version.number.to_s
   %span.version-updated-at
-    %abbr{:title => @version.instance.updated_at.getlocal.to_formatted_s(:long)}
+    %abbr{:title => @version.instance.updated_at.strftime("%B %d, %Y %I:%M %p")}
       = time_ago_in_words(@version.instance.updated_at) + " ago"
   %span.version-status
     = @version.instance.status.name

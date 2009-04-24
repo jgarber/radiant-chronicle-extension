@@ -1,0 +1,51 @@
+#diff.form-area
+  %h3 Metadata:
+  %table{:class=>"fieldset"}
+    %tbody
+      %tr
+        %th{:class=>"label"} Page Title:
+        %td{:class=>"field"}
+          %span.from Foo
+          &rarr;
+          %span.to Bar
+      %tr
+        %th{:class=>"label"} Slug:
+        %td{:class=>"field"}
+          %span.from foo
+          &rarr;
+          %span.to bar
+  %h3 Page Parts:
+  #pages
+    .page
+      %h4 body
+      %pre
+        This is the contents of the body part. It has some <ins>inserted </ins>and some <del>deleted </del>text.
+    .page.added
+      %h4 something-added
+      %pre
+        This page part was added.
+    .page.deleted
+      %h4 something-deleted
+      %pre
+        This page part was deleted.
+  .row
+    %p
+      %label Layout:
+      %span
+        %span.from Foo
+        &rarr;
+        %span.to Bar
+    %p
+      %label Page Type:
+      %span
+        %span.from Foo
+        &rarr;
+        %span.to Bar
+    %p
+      %label Status:
+      %span
+        %span.from Foo
+        &rarr;
+        %span.to Bar
+  %span.clear
+  = updated_stamp(version.instance)

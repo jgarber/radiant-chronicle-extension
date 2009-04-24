@@ -1,5 +1,5 @@
 $('version-number').update(<%= @version.number.to_json %>);
-$('version-diff').update(<%= diff(@version).to_json %>);
+$('version-diff').update(<%= render(:partial => 'diff', :locals => {:version => @version}).to_json %>);
 center($('version-diff-popup'));
 timeline_balloons[<%= @version.number.to_json %>].hide(); // Hide the current balloon.
 $('version-diff-popup').show();

@@ -51,12 +51,12 @@ describe "/admin/versions/summary" do
   
   it "should display the update time in extended form in abbr title" do
     @version = pages(:updated_by_existing).versions.current
-    @version.instance.stub!(:updated_at).and_return Time.local(2009,1,1,8,57)
+    @version.instance.stub!(:updated_at).and_return Time.utc(2009,1,1,13,57)
     assigns[:version] = @version
     render 'admin/versions/summary'
     
     response.should have_selector("span.version-updated-at") do |span|
-      span.should have_selector("abbr", :title => "January 01, 2009 08:57")
+      span.should have_selector("abbr", :title => "January 01, 2009 01:57 PM")
     end
   end
 end
