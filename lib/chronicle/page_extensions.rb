@@ -1,7 +1,7 @@
 module Chronicle::PageExtensions
   def self.included(base)
     base.class_eval do
-      simply_versioned :keep => 10
+      simply_versioned
       alias_method_chain :update_without_callbacks, :draft_versioning
       alias_method_chain :save_page_parts, :draft_versioning
       alias_method_chain :find_by_url, :draft_versioning
