@@ -8,7 +8,7 @@ class ChronicleExtension < Radiant::Extension
   
   define_routes do |map|
     map.namespace :admin, :member => { :remove => :get } do |admin|
-      admin.resources :versions
+      admin.resources :versions, :member => { :diff => :get }
     end
   end
   
@@ -18,6 +18,7 @@ class ChronicleExtension < Radiant::Extension
     Admin::ResourceController.send :include, Chronicle::ResourceControllerExtensions
     admin.page.edit.add :main, "admin/timeline", :before => "edit_header"
     Admin::PagesController.send :include, Chronicle::Interface
+    admin.page.edit.add :popups, 'admin/pages/version_diff_popup'
     
     # admin.tabs.add "Chronicle", "/admin/chronicle", :after => "Layouts", :visibility => [:all]
   end

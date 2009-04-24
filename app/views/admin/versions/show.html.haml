@@ -8,3 +8,5 @@
     = @version.instance.status.name
   %span.version-author
     = @version.saved_by.name
+  %span.diff-link
+    = link_to_function 'Show Diff', "load_version_diff('#{diff_admin_version_path(@version)}', this);"

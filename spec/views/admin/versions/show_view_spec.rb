@@ -41,6 +41,12 @@ describe "/admin/versions/show" do
     it "should display the status" do
       response.should have_selector("span.version-status", :content => "Published")
     end
+    
+    it "should display the diff link" do
+      response.should have_selector("span.diff-link") do |span|
+        span.should have_selector("a", :onclick=>"load_version_diff('/admin/versions/#{@version.id}/diff', this);; return false;", :href=>"#")
+      end
+    end
   end
   
   it "should display the update time in extended form in abbr title" do

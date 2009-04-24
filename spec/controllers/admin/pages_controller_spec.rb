@@ -8,6 +8,7 @@ describe Admin::PagesController do
   end
   
   describe "editing a page" do
+    integrate_views
     
     it "should load the current version for editing" do
       page = pages(:first)
@@ -18,6 +19,12 @@ describe Admin::PagesController do
       get :edit, :id => page.id
       
       assigns[:page].title.should == page.current.title
+    end
+    
+    it "should have the version diff popup" do
+      get :edit, :id => page_id(:first)
+      response.should be_success
+      response.should have_selector("div#version-diff-popup")
     end
   end
 end

@@ -2,8 +2,10 @@ module Admin::TimelineHelper
   
   def page_edit_javascripts_with_timeline_bubbles
     page_edit_javascripts_without_timeline_bubbles + <<-CODE
-      function attach_help_bubble_to_timeline_version_node(node, data_url) {
-        new HelpBalloon({
+    timeline_balloons = $A()
+      function attach_help_balloon(version_number, data_url) {
+        node = $('version-'+version_number+'-icon');
+        timeline_balloons[version_number] = new HelpBalloon({
           dataURL: data_url,
           icon: node,
           balloonPrefix: '/images/admin/balloon-',
@@ -13,6 +15,12 @@ module Admin::TimelineHelper
           hideEffect: Effect.Fade,
           autoHideTimeout: 2000
         });
+      }
+      function load_version_diff(url, diff_link) {
+        popup = $('version-diff-popup');
+        new Effect.Highlight(diff_link);
+        req = new Ajax.Request(url, { method: 'get', evalScripts: true });
+        return false;
       }
     CODE
   end
@@ -62,9 +70,8 @@ module Admin::TimelineHelper
   end
   
   def version_tooltip(version)
-    node = "$('version-#{version.number}-icon')";
     data_url = admin_version_path(version)
-    javascript_tag "attach_help_bubble_to_timeline_version_node(#{node}, '#{data_url}');"
+    javascript_tag "attach_help_balloon(#{version.number}, '#{data_url}');"
   end
   
   def this_version_tooltip
