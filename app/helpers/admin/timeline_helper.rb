@@ -70,7 +70,7 @@ module Admin::TimelineHelper
   end
   
   def version_tooltip(version)
-    data_url = admin_version_path(version)
+    data_url = summary_admin_version_path(version)
     javascript_tag "attach_help_balloon(#{version.number}, '#{data_url}');"
   end
   

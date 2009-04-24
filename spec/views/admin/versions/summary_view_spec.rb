@@ -1,13 +1,13 @@
 require File.dirname(__FILE__) + '/../../../spec_helper'
 
-describe "/admin/versions/show" do
+describe "/admin/versions/summary" do
   dataset :versions
   
   describe "first version" do
     before do
       @version = pages(:updated_by_existing).versions.first
       assigns[:version] = @version
-      render 'admin/versions/show'
+      render 'admin/versions/summary'
     end
     
     it "should display the created_by name instead of the updated_by name" do
@@ -21,7 +21,7 @@ describe "/admin/versions/show" do
       @version = pages(:updated_by_existing).versions.current
       @version.instance.stub!(:updated_at).and_return 1.hour.ago
       assigns[:version] = @version
-      render 'admin/versions/show'
+      render 'admin/versions/summary'
     end 
   
     it "should display the version number" do
@@ -53,7 +53,7 @@ describe "/admin/versions/show" do
     @version = pages(:updated_by_existing).versions.current
     @version.instance.stub!(:updated_at).and_return Time.local(2009,1,1,8,57)
     assigns[:version] = @version
-    render 'admin/versions/show'
+    render 'admin/versions/summary'
     
     response.should have_selector("span.version-updated-at") do |span|
       span.should have_selector("abbr", :title => "January 01, 2009 08:57")

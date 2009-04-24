@@ -7,9 +7,9 @@ describe Admin::VersionsController do
     login_as :developer
   end
   
-  describe "GET 'show'" do
+  describe "GET 'summary'" do
     it " should be successful" do
-      get 'show', :id => pages(:published).versions.first.id
+      get 'summary', :id => pages(:published).versions.first.id
       response.should be_success
       response.layout.should be_nil
     end
