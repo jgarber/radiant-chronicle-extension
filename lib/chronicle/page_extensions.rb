@@ -38,7 +38,7 @@ module Chronicle::PageExtensions
       simply_versioned_create_version_without_extra_version_attributes
     end
     
-    self.versions.current.update_attributes(:slug => slug, :status_id => status_id)
+    self.versions.current.update_attributes(:slug => slug, :status_id => status_id, :diff => diff)
   end
   
   # Works the same as #find_by_url when in live mode, but in dev mode, finds
@@ -96,5 +96,10 @@ module Chronicle::PageExtensions
     write_attribute "parts", self.parts.map {|p| p.attributes }
     block.call
     self.attributes = real_attributes if self.status_id < Status[:published].id
+  end
+  
+  def diff
+    result = changes
+    result.merge("parts" => [])
   end
 end

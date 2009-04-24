@@ -152,6 +152,45 @@ describe Page do
       pages(:home).current_children.should include(@page)
     end
   end
+  
+  describe "#diff" do
+    it "should include a title change" do
+      page = pages(:home)
+      page.title = "Changed"
+      page.diff.should include("title")
+      page.diff["title"].should == ["Home", "Changed"]
+    end
+    
+    it "should include a slug change" do
+      page = pages(:first)
+      page.slug = "changed"
+      page.diff.should include("slug")
+      page.diff["slug"].should == ["first", "changed"]
+    end
+    
+    it "should include a part addition" do
+      page = pages(:first)
+      page.parts = [{"name"=>"added", "filter_id"=>"", "content"=>"I added this"}]
+      page.diff.should include("parts")
+      page.diff["parts"].should include([{"name"=>"added", "filter_id"=>"", "content"=>"I added this"}])
+    end
+    
+    it "should include a part change" do
+      page = pages(:first)
+    pending
+      page.parts = [{"name"=>"body", "filter_id"=>"", "content"=>"Changed body"}]
+      page.diff.should include("parts")
+      page.diff["parts"].should include([{"name"=>"body", "filter_id"=>"", "content"=>"Body"},{"name"=>"body", "filter_id"=>"", "content"=>"Changed body"}])
+    end
+    
+    it "should include a part deletion" do
+      page = pages(:first)
+    pending
+      page.parts = [{"name"=>"body", "filter_id"=>"", "content"=>"Changed body"}]
+      page.diff.should include("parts")
+      page.diff["parts"].should include([{"name"=>"body", "filter_id"=>"", "content"=>"Body"},{"name"=>"body", "filter_id"=>"", "content"=>"Changed body"}])
+    end
+  end
 
   describe "#find_by_url" do
     dataset :pages, :file_not_found

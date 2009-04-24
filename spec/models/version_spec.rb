@@ -69,5 +69,18 @@ describe Version do
       version.saved_by.should == users(:admin)
     end
   end
+  
+  describe "#diff" do
+    it "should not be empty after save" do
+      version = pages(:draft).versions.current
+      version.diff.should_not be_nil
+    end
     
+    it "should be saved as yaml" do
+      pending
+      version = pages(:draft).versions.current
+      YAML::load(version.diff) # how to test?  "FIXME" doesn't raise an error
+    end
+  end
+  
 end
