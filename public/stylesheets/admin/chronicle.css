@@ -62,3 +62,34 @@ td.status span.status.draft-status {
 td.status span.status.reviewed-status {
   color: #9eb3bf;
 }
+
+/*** Diff view ***/
+#content #diff table.fieldset td.field {
+  text-align: left;
+  padding-top: 10px;
+  width: 98%;
+}
+#content #diff #pages .page {
+  border-width: 1px;
+  padding: 15px 20px;
+}
+#content #diff #pages .page.added {
+  background-color: #DDFFDD;
+}
+#content #diff #pages .page.deleted {
+  background-color: #FFDDDD;
+}
+#content #diff #pages .page h4 {
+  font-weight: bold;
+}
+#content #diff pre {
+  margin: 1em 0 0;
+}
+#content #diff ins {
+  background-color: #99EE99;
+  text-decoration: none;
+}
+#content #diff del {
+  background-color: #EE9999;
+  text-decoration: line-through;
+}

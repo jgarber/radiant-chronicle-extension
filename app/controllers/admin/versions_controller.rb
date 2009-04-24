@@ -1,4 +1,11 @@
 class Admin::VersionsController < ApplicationController
+  include Chronicle::Interface
+  before_filter :add_chronicle_stylesheet, :only => [:index, :show, :summary, :diff]
+
+  def show
+    @version = Version.find(params[:id])
+  end
+
   def summary
     @version = Version.find(params[:id])
     respond_to do |wants|
