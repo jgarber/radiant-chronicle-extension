@@ -15,6 +15,7 @@ class ChronicleExtension < Radiant::Extension
   def activate
     Version.send :include, Chronicle::VersionExtensions
     Page.send :include, Chronicle::PageExtensions
+    PagePart.send :include, Chronicle::PagePartExtensions
     Admin::ResourceController.send :include, Chronicle::ResourceControllerExtensions
     admin.page.edit.add :main, "admin/timeline", :before => "edit_header"
     Admin::PagesController.send :include, Chronicle::Interface

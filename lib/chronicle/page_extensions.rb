@@ -100,6 +100,25 @@ module Chronicle::PageExtensions
   
   def diff
     result = changes
-    result.merge("parts" => [])
+    parts_diff = self.parts.map do |new_part|
+      old_part = self.parts_without_pending.find_by_name(new_part.name)
+      new_part_attributes = new_part.attributes_for_diff
+      if old_part.nil?
+        [nil, new_part_attributes] # Added part
+      else
+        old_part_attributes = old_part.attributes_for_diff
+        if old_part_attributes == new_part_attributes # Because #uniq doesn't work to eliminate duplicate hashes in an array
+          [new_part_attributes] # Unchanged part
+        else
+          [old_part_attributes, new_part_attributes] # Changed part
+        end
+      end
+    end
+    deleted_part_names = self.parts_without_pending.map(&:name) - self.parts.map(&:name)
+    deleted_part_names.each do |name|
+      old_part = self.parts_without_pending.find_by_name(name)
+      parts_diff << [old_part.attributes_for_diff, nil] # Deleted part
+    end
+    result.merge("parts" => parts_diff)
   end
 end

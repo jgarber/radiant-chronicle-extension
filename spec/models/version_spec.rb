@@ -77,9 +77,8 @@ describe Version do
     end
     
     it "should be saved as yaml" do
-      pending
-      version = pages(:draft).versions.current
-      YAML::load(version.diff) # how to test?  "FIXME" doesn't raise an error
+      version = pages(:page_with_draft).versions.current
+      YAML::load(version.diff).is_a?(Hash)
     end
   end
   
