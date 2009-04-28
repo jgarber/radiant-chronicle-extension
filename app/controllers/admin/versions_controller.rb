@@ -1,6 +1,10 @@
 class Admin::VersionsController < ApplicationController
   include Chronicle::Interface
   before_filter :add_chronicle_stylesheet, :only => [:index, :show, :summary, :diff]
+  
+  def index
+    @versions = Version.find(:all, :order => "created_at DESC")
+  end
 
   def show
     @version = Version.find(params[:id])

@@ -21,7 +21,7 @@ class ChronicleExtension < Radiant::Extension
     Admin::PagesController.send :include, Chronicle::Interface
     admin.page.edit.add :popups, 'admin/pages/version_diff_popup'
     
-    # admin.tabs.add "Chronicle", "/admin/chronicle", :after => "Layouts", :visibility => [:all]
+    admin.tabs.add "History", "/admin/versions/", :visibility => [:all]
   end
   
   def deactivate

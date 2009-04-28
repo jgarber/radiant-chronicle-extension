@@ -7,6 +7,13 @@ describe Admin::VersionsController do
     login_as :developer
   end
   
+  describe "GET 'index'" do
+    it " should be successful" do
+      get 'index'
+      response.should be_success
+    end
+  end
+  
   describe "GET 'summary'" do
     it " should be successful" do
       get 'summary', :id => pages(:published).versions.first.id

@@ -1,0 +1,20 @@
+%h1 History
+
+%table#versions.index{:cellspacing=>"0", :border=>"0", :cellpadding=>"0"}
+  %thead
+    %tr
+      %th Version
+      %th User
+      %th Time
+      %th Diff
+  %tbody
+    - @versions.each do |version|
+      %tr
+        %td
+          = link_to version.instance.title, edit_admin_page_path(version.instance)
+          %small.login
+            Version
+            = version.number
+        %td= version.instance.updated_by ? version.instance.updated_by.name : ""
+        %td= version.created_at
+        %td= link_to "Diff", admin_version_path(version)
