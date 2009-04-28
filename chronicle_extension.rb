@@ -3,8 +3,8 @@ require_dependency 'application'
 
 class ChronicleExtension < Radiant::Extension
   version "1.0"
-  description "Describe your extension here"
-  url "http://yourwebsite.com/chronicle"
+  description "Keeps historical versions of pages and allows drafts of published pages."
+  url "http://github.com/jgarber/radiant-chronicle-extension/"
   
   define_routes do |map|
     map.namespace :admin, :member => { :remove => :get } do |admin|
