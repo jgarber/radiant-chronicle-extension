@@ -70,15 +70,15 @@ describe Version do
     end
   end
   
-  describe "#diff" do
+  describe "diff" do
     it "should not be empty after save" do
       version = pages(:draft).versions.current
-      version.diff.should_not be_nil
+      version["diff"].should_not be_nil
     end
     
-    it "should be saved as yaml" do
+    it "should return a hash" do
       version = pages(:page_with_draft).versions.current
-      YAML::load(version.diff).is_a?(Hash)
+      version.diff.is_a?(Hash)
     end
   end
   

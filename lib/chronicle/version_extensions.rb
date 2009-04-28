@@ -33,4 +33,8 @@ module Chronicle::VersionExtensions
   def only_visible_in_dev_mode?
     status_id < Status[:published].id
   end
+  
+  def diff
+    YAML::load(read_attribute("diff"))
+  end
 end

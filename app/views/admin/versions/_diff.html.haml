@@ -4,16 +4,11 @@
     %tbody
       %tr
         %th{:class=>"label"} Page Title:
-        %td{:class=>"field"}
-          %span.from Foo
-          &rarr;
-          %span.to Bar
-      %tr
-        %th{:class=>"label"} Slug:
-        %td{:class=>"field"}
-          %span.from foo
-          &rarr;
-          %span.to bar
+        %td{:class=>"field"}= field_diff(version.diff["title"] || [version.instance.title])
+      - if version.diff["slug"]
+        %tr
+          %th{:class=>"label"} Slug:
+          %td{:class=>"field"}= field_diff(version.diff["slug"])
   %h3 Page Parts:
   #pages
     .page
