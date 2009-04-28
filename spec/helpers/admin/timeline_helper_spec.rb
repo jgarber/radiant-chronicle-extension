@@ -73,6 +73,11 @@ describe Admin::TimelineHelper do
     pending # timeline limit is not implemented yet, but class="beginning" on the LI will make the line fade
   end
   
+  it "should accept a version as its input" do
+    version = pages(:draft_with_many_versions).versions.current
+    helper.timeline(version).should have_version(1).as(:draft)
+  end
+  
   def have_marker(type=nil)
     opts = {:class=>"marker"}
     if type

@@ -1,6 +1,8 @@
 module Admin::TimelineHelper
   
   def timeline(page)
+    current_version = nil
+    page, current_version = page.instance, page if page.is_a?(Version)
     versions = page.versions
     content_tag(:div, :id=>"timeline") do
       content_tag(:ol) do
