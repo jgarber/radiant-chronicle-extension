@@ -170,6 +170,7 @@ describe Page do
     
     it "should include a part that stays the same" do
       page = pages(:first)
+      page.parts = [{"name"=>"body", "filter_id"=>"", "content"=>"First body."}]
       page.diff.should include("parts")
       page.diff["parts"].should include([{"name"=>"body", "filter_id"=>"", "content"=>"First body."}])
     end

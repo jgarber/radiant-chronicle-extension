@@ -11,18 +11,8 @@
           %td{:class=>"field"}= field_diff(version.diff["slug"])
   %h3 Page Parts:
   #pages
-    .page
-      %h4 body
-      %pre
-        This is the contents of the body part. It has some <ins>inserted </ins>and some <del>deleted </del>text.
-    .page.added
-      %h4 something-added
-      %pre
-        This page part was added.
-    .page.deleted
-      %h4 something-deleted
-      %pre
-        This page part was deleted.
+    - version.diff["parts"].each do |part|
+      = part_diff(part)
   .row
     %p
       %label Layout:

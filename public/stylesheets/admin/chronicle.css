@@ -86,10 +86,16 @@ td.status span.status.reviewed-status {
 #content #diff h3 {
   margin-bottom: 6px;
 }
-#content #diff h4,
-#version-diff-popup #diff h4 {
+#content #diff h4.name,
+#version-diff-popup #diff h4.name {
   font-weight: bold;
-  margin: 0;
+  margin: 0 1em 0 0;
+  float: left;
+}
+#content #diff p.filter,
+#version-diff-popup #diff p.filter {
+  font-size: 90%;
+  margin-top: .1em;
 }
 #content #diff pre,
 #version-diff-popup #diff pre {

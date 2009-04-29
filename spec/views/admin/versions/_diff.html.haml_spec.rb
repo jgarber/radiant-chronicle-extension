@@ -26,4 +26,13 @@ describe "/admin/versions/_diff.html.haml" do
     response.should have_selector("span.from", :content => "published")
     response.should have_selector("span.to", :content => "published-2")
   end
+  
+  it "should show the parts' diffs" do
+    page = pages(:published)
+    page.parts = [{"name"=>"body", "filter_id"=>"", "content"=>"Changed body"}]
+    page.save
+    @version = page.versions.current
+    render 'admin/versions/_diff.html.haml', :locals => {:version => @version}
+    response.should have_selector("div.page", :content => "Changed body")
+  end
 end
