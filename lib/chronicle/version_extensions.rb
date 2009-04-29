@@ -35,6 +35,10 @@ module Chronicle::VersionExtensions
   end
   
   def diff
-    YAML::load(read_attribute("diff"))
+    if previous
+      previous.instance.diff(self.instance)
+    else
+      self.instance.diff
+    end
   end
 end

@@ -70,7 +70,7 @@ describe Version do
     end
   end
   
-  describe "diff" do
+  describe "#diff" do
     it "should not be empty after save" do
       version = pages(:draft).versions.current
       version["diff"].should_not be_nil
@@ -80,6 +80,61 @@ describe Version do
       version = pages(:page_with_draft).versions.current
       version.diff.is_a?(Hash)
     end
+    
+    it "should include a title change" do
+      page = pages(:published)
+      page.title = "Changed"
+      page.save
+      version = page.versions.current
+      version.diff.should include(:title)
+      version.diff[:title].should == ["Published", "Changed"]
+    end
+    
+    it "should include a slug change" do
+      page = pages(:published)
+      page.slug = "changed"
+      page.save
+      version = page.versions.current
+      version.diff.should include(:slug)
+      version.diff[:slug].should == ["published", "changed"]
+    end
+    
+    it "should include a part that stays the same" do
+      page = pages(:published)
+      page.parts = [{"name"=>"body", "filter_id"=>"", "content"=>"Published body."}]
+      page.save
+      version = page.versions.current
+      version.diff.should include(:parts)
+      version.diff[:parts].should include([{"name"=>"body", "filter_id"=>"", "content"=>"Published body."}])
+    end
+    
+    it "should include a part addition" do
+      page = pages(:published)
+      page.parts = [{"name"=>"body", "filter_id"=>"", "content"=>"Published body."}, {"name"=>"added", "filter_id"=>"", "content"=>"I added this part"}]
+      page.save
+      version = page.versions.current
+      version.diff.should include(:parts)
+      version.diff[:parts].should include([nil, {"name"=>"added", "filter_id"=>"", "content"=>"I added this part"}])
+    end
+    
+    it "should include a part change" do
+      page = pages(:published)
+      page.parts = [{"name"=>"body", "filter_id"=>"", "content"=>"Changed body"}]
+      page.save
+      version = page.versions.current
+      version.diff.should include(:parts)
+      version.diff[:parts].should == [[{"name"=>"body", "filter_id"=>"", "content"=>"Published body."}, {"name"=>"body", "filter_id"=>"", "content"=>"Changed body"}]]
+    end
+    
+    it "should include a part deletion" do
+      page = pages(:published)
+      page.parts = [{"name"=>"added", "filter_id"=>"", "content"=>"I added this part"}]
+      page.save
+      version = page.versions.current
+      version.diff.should include(:parts)
+      version.diff[:parts].should include([{"name"=>"body", "filter_id"=>"", "content"=>"Published body."},nil])
+    end
+    
   end
   
 end

@@ -13,6 +13,9 @@ module Chronicle::PageExtensions
       @after_save_callbacks.delete(create_version_callback)
       @after_save_callbacks.unshift(create_version_callback)
     end
+    
+    base.send :include, ActiveRecord::Diff
+    base.send :alias_method_chain, :diff, :parts
   end
   
   def update_without_callbacks_with_draft_versioning
@@ -38,7 +41,7 @@ module Chronicle::PageExtensions
       simply_versioned_create_version_without_extra_version_attributes
     end
     
-    self.versions.current.update_attributes(:slug => slug, :status_id => status_id, :diff => diff)
+    self.versions.current.update_attributes(:slug => slug, :status_id => status_id)
   end
   
   # Works the same as #find_by_url when in live mode, but in dev mode, finds
@@ -98,10 +101,14 @@ module Chronicle::PageExtensions
     self.attributes = real_attributes if self.status_id < Status[:published].id
   end
   
-  def diff
-    result = changes
-    parts_diff = self.parts.map do |new_part|
-      old_part = self.parts_without_pending.find_by_name(new_part.name)
+  def diff_with_parts(other_record = nil)
+    if other_record.nil?
+      old_record, new_record = self.class.find(id), self
+    else
+      old_record, new_record = self, other_record
+    end
+    parts_diff = new_record.parts.map do |new_part|
+      old_part = old_record.part(new_part.name)
       new_part_attributes = new_part.attributes_for_diff
       if old_part.nil?
         [nil, new_part_attributes] # Added part
@@ -114,11 +121,11 @@ module Chronicle::PageExtensions
         end
       end
     end
-    deleted_part_names = self.parts_without_pending.map(&:name) - self.parts.map(&:name)
+    deleted_part_names = old_record.parts.map(&:name) - new_record.parts.map(&:name)
     deleted_part_names.each do |name|
-      old_part = self.parts_without_pending.find_by_name(name)
+      old_part = old_record.part(name)
       parts_diff << [old_part.attributes_for_diff, nil] # Deleted part
     end
-    result.merge("parts" => parts_diff)
+    diff_without_parts(other_record).merge(:parts => parts_diff)
   end
 end

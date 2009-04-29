@@ -30,8 +30,16 @@ class VersionsDataset < Dataset::Base
     def create_versioned_page(name, attributes={}, &block)
       UserActionObserver.current_user = users(:admin)
       create_page(name, attributes) do
+        create_default_versioned_part(name, attributes)
         create_version
         block.call if block_given?
+      end
+    end
+    def create_default_versioned_part(name, attributes={})
+      symbol = name.symbolize
+      body = attributes.delete(:body) || name
+      if pages(symbol).parts.empty?
+        create_page_part "#{name}_body".symbolize, :name => "body", :content => body + ' body.', :page_id => page_id(symbol)
       end
     end
     def create_version(attributes={})
