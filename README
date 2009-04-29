@@ -1,11 +1,16 @@
 = Chronicle
 
-This extension keeps historical versions of pages in all their
-states—published, hidden, draft, and reviewed. The most recent published or
-hidden version is visible in live mode and the most recent version (the
-"current version") in any state is visible in dev mode. Thus, you can work on
-a draft in dev mode, preview exactly how it will look, and then make it live
-when you are ready.
+In an enterprise production environment, it's critical that content editors,
+designers, and developers be able to edit pages and preview their changes
+without affecting the live version and that site administrators be able to see
+who changed what and roll back if necessary.
+
+This extension adds versioning to pages and uses a page's status to determine
+its visibility. The most recent published or hidden version is visible in live
+mode and the most recent version, a.k.a. the "current version," is visible in
+dev mode regardless of its status. Thus, you can work on a draft in dev mode,
+preview exactly how it will look, and then make it live when you are ready by
+changing its status to published.
 
 == An example
 
@@ -20,19 +25,24 @@ Look at the revision history of the home page of example.com:
 If you went to example.com/ you would see version 24. If you went to
 dev.example.com/ you would see version 25.
 
-Quick terminology primer: A page "is a draft" when its status is set to Draft.
-A page "has a draft" when its most current version is a draft. When a page's
-current version is Published, it "does not have a draft".
-
 Many people overlook the dev mode feature of Radiant. If you don't know about
-it, see http://wiki.radiantcms.org/How_To_Setup_Dev_Mode. Understanding it is
-key to wrapping your head around Chronicle.
+it, see http://wiki.radiantcms.org/How_To_Setup_Dev_Mode.
+
+Some terminology used in the specs:
+* The "current version" is the highest-numbered version, a.k.a. the "current
+  dev" version.
+* The "current live" version is the most recent Published or Hidden page.
+* A page "is a draft" when its status is set to Draft.
+* A page "has a draft" when its current version is a draft.
+* When a page's current version is Published, the page "does not have a 
+  draft".
 
 == Features:
 
-* TODO Simple graph showing the change history
+* Simple graph showing the change history
+* TODO Check a box to view the page in a new window/tab after saving
 * TODO Roll back to a previous version by creating a new one based on it
-* TODO See what changed in a given version (plain-text diff)
+* TODO See what changed in a given version
 * TODO Integration with the Dashboard extension so you can see what has
        changed recently and what pages have unpublished changes (drafts ahead
        of published versions)
