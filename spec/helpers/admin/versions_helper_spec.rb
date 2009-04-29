@@ -44,20 +44,20 @@ describe Admin::VersionsHelper do
       end
       
       it "should render the 'part' partial when part not changed" do
-        helper.should_receive(:render).with(hash_including(:partial => 'part')).and_return("rendered part")
         diff = [{"name" => "body", "content" => "A", "filter_id" => ""}]
+        helper.should_receive(:render).with(hash_including(:partial => 'part', :locals => {:part => diff.first})).and_return("rendered part")
         helper.part_diff(diff)
       end
       
       it "should render the 'part' partial when part is added" do
-        helper.should_receive(:render).with(hash_including(:partial => 'part')).and_return("rendered part")
         diff = [nil,{"name" => "body", "content" => "", "filter_id" => ""}]
+        helper.should_receive(:render).with(hash_including(:partial => 'part', :locals => {:part => diff.last})).and_return("rendered part")
         helper.part_diff(diff)
       end
       
       it "should render the 'part' partial when part is deleted" do
-        helper.should_receive(:render).with(hash_including(:partial => 'part')).and_return("rendered part")
         diff = [{"name" => "body", "content" => "", "filter_id" => ""},nil]
+        helper.should_receive(:render).with(hash_including(:partial => 'part', :locals => {:part => diff.first})).and_return("rendered part")
         helper.part_diff(diff)
       end
     end

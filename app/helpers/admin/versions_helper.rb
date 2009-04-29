@@ -12,12 +12,13 @@ module Admin::VersionsHelper
   
   def part_diff(array)
     previous, current = *array
+    unique_parts = array.compact
     options = {:class => "page"}
     options[:class] += " added" if previous.nil?
     options[:class] += " deleted" if current.nil? && array.size > 1
     content_tag(:div, options) do
-      if array.compact.size < 2 # i.e. part has no internal change
-        render :partial => 'part', :locals => {:part => previous}
+      if unique_parts.size < 2 # i.e. part has no internal change
+        render :partial => 'part', :locals => {:part => unique_parts.first}
       else
         render :partial => 'part_diff', :locals => {:previous => previous, :current => current}
       end
