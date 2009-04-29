@@ -24,4 +24,10 @@ module Admin::VersionsHelper
       end
     end
   end
+  
+  def layout_diff(version)
+    layout_ids = version.diff[:layout_id] || [version.instance.layout_id]
+    return "" if layout_ids.compact.empty?
+    field_diff layout_ids.map {|layout_id| layout_id.nil? ? "" : Layout.find(layout_id).name }
+  end
 end

@@ -15,7 +15,8 @@ module Chronicle::PageExtensions
     end
     
     base.send :include, ActiveRecord::Diff
-    base.send :alias_method_chain, :diff, :parts
+    base.send :alias_method_chain, :diff, :page_associations
+    base.send(:diff, {:include => [:layout_id]})
   end
   
   def update_without_callbacks_with_draft_versioning
@@ -101,7 +102,7 @@ module Chronicle::PageExtensions
     self.attributes = real_attributes if self.status_id < Status[:published].id
   end
   
-  def diff_with_parts(other_record = nil)
+  def diff_with_page_associations(other_record = nil)
     if other_record.nil?
       old_record, new_record = self.class.find(id), self
     else
@@ -126,6 +127,6 @@ module Chronicle::PageExtensions
       old_part = old_record.part(name)
       parts_diff << [old_part.attributes_for_diff, nil] # Deleted part
     end
-    diff_without_parts(other_record).merge(:parts => parts_diff)
+    diff_without_page_associations(other_record).merge(:parts => parts_diff)
   end
 end

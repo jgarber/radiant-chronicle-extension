@@ -8,6 +8,41 @@ describe Admin::VersionsHelper do
       helper.field_diff(["Foo", "Bar"]).should == %Q{<span class="from">Foo</span> &rarr; <span class="to">Bar</span>}
     end
   end
+
+  describe "#layout_diff" do
+    it "should format the layout field's diff output when layout changed" do
+      version = stub(Version)
+      layout_1 = mock_model(Layout)
+      layout_1.should_receive(:name).and_return("Foo")
+      layout_2 = mock_model(Layout)
+      layout_2.should_receive(:name).and_return("Bar")
+      Layout.should_receive(:find).twice.and_return(layout_1, layout_2)
+      version.stub!(:diff).and_return(:layout_id => [layout_1.id, layout_2.id])
+      helper.layout_diff(version).should == helper.field_diff(["Foo", "Bar"])
+    end
+    
+    it "should format the layout field's diff output when layout changed from nil" do
+      version = stub(Version)
+      layout_2 = mock_model(Layout)
+      layout_2.should_receive(:name).and_return("Bar")
+      Layout.should_receive(:find).once.with(layout_2.id).and_return(layout_2)
+      version.stub!(:diff).and_return(:layout_id => [nil, layout_2.id])
+      helper.layout_diff(version).should == helper.field_diff(["", "Bar"])
+    end
+    
+    it "should format the layout field when no change" do
+      version = stub(Version)
+      layout_1 = mock_model(Layout)
+      layout_1.should_receive(:name).and_return("Foo")
+      Layout.should_receive(:find).once.with(layout_1.id).and_return(layout_1)
+      instance = stub(Page)
+      instance.stub!(:layout_id).and_return(layout_1.id)
+      version.stub!(:instance).and_return(instance)
+      version.stub!(:diff).and_return({})
+      helper.layout_diff(version).should == "Foo"
+    end
+    
+  end
   
   describe "#part_diff" do
     describe "page wrapper" do

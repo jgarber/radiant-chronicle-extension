@@ -1,7 +1,7 @@
 require File.dirname(__FILE__) + '/../../../spec_helper'
 
 describe "/admin/versions/_diff.html.haml" do
-  dataset :versions
+  dataset :versions, :layouts
   
   it "should have a title even when title was not changed" do
     @version = pages(:published).versions.current
@@ -35,4 +35,14 @@ describe "/admin/versions/_diff.html.haml" do
     render 'admin/versions/_diff.html.haml', :locals => {:version => @version}
     response.should have_selector("div.page", :content => "Changed body")
   end
+  
+  it "should have a changed layout" do
+    page = pages(:published)
+    page.update_attributes(:layout_id => layout_id(:main))
+    @version = page.versions.current
+    render 'admin/versions/_diff.html.haml', :locals => {:version => @version}
+    response.should have_selector("span.from", :content => "")
+    response.should have_selector("span.to", :content => "Main")
+  end
+  
 end

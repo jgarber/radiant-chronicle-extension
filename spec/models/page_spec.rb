@@ -1,7 +1,7 @@
 require File.dirname(__FILE__) + '/../spec_helper'
 
 describe Page do
-  dataset :pages
+  dataset :pages, :layouts
   
   it "should be valid" do
     @page = Page.new(page_params)
@@ -166,6 +166,13 @@ describe Page do
       page.slug = "changed"
       page.diff.should include(:slug)
       page.diff[:slug].should == ["first", "changed"]
+    end
+    
+    it "should include a layout change" do
+      page = pages(:first)
+      page.layout_id = layout_id(:main)
+      page.diff.should include(:layout_id)
+      page.diff[:layout_id].should == [nil, layout_id(:main)]
     end
   end
 
