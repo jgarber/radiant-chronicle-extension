@@ -1,6 +1,7 @@
 %h4.name= part["name"]
-%p.filter
-  Filter:
-  = part["filter_id"]
+- unless part["filter_id"].blank?
+  %p.filter
+    Filter:
+    = part["filter_id"]
 %pre
   = part["content"]

@@ -89,7 +89,7 @@ td.status span.status.reviewed-status {
 #content #diff h4.name,
 #version-diff-popup #diff h4.name {
   font-weight: bold;
-  margin: 0 1em 0 0;
+  margin: 0 1em 1em 0;
   float: left;
 }
 #content #diff p.filter,
@@ -100,6 +100,7 @@ td.status span.status.reviewed-status {
 #content #diff pre,
 #version-diff-popup #diff pre {
   margin: 1em 0 0;
+  clear: left;
 }
 #content #diff ins,
 #version-diff-popup #diff ins {

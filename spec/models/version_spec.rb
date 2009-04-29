@@ -71,11 +71,6 @@ describe Version do
   end
   
   describe "#diff" do
-    it "should not be empty after save" do
-      version = pages(:draft).versions.current
-      version["diff"].should_not be_nil
-    end
-    
     it "should return a hash" do
       version = pages(:page_with_draft).versions.current
       version.diff.is_a?(Hash)
