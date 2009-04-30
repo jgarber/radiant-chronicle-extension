@@ -26,9 +26,10 @@ module Admin::VersionsHelper
   end
   
   def layout_diff(version)
+    nil_value = h("<inherit>")
     layout_ids = version.diff[:layout_id] || [version.instance.layout_id]
-    return "" if layout_ids.compact.empty?
-    field_diff layout_ids.map {|layout_id| layout_id.nil? ? "" : Layout.find(layout_id).name }
+    return nil_value if layout_ids.compact.empty?
+    field_diff layout_ids.map {|layout_id| layout_id.nil? ? nil_value : Layout.find(layout_id).name }
   end
 
   def status_diff(version)

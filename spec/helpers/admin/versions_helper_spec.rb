@@ -27,7 +27,7 @@ describe Admin::VersionsHelper do
       layout_2.should_receive(:name).and_return("Bar")
       Layout.should_receive(:find).once.with(layout_2.id).and_return(layout_2)
       version.stub!(:diff).and_return(:layout_id => [nil, layout_2.id])
-      helper.layout_diff(version).should == helper.field_diff(["", "Bar"])
+      helper.layout_diff(version).should == helper.field_diff(["<inherit>", "Bar"])
     end
     
     it "should format the layout field when no change" do
@@ -41,6 +41,16 @@ describe Admin::VersionsHelper do
       version.stub!(:diff).and_return({})
       helper.layout_diff(version).should == "Foo"
     end
+    
+    it "should the layout inherits when nil and no change" do
+      version = stub(Version)
+      instance = stub(Page)
+      instance.stub!(:layout_id).and_return(nil)
+      version.stub!(:instance).and_return(instance)
+      version.stub!(:diff).and_return({})
+      helper.layout_diff(version).should == "&lt;inherit&gt;"
+    end
+    
   end
   
   describe "#status_diff" do
