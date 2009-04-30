@@ -181,6 +181,14 @@ describe Page do
       page.diff.should include(:class_name)
       page.diff[:class_name].should == [nil, "ArchivePage"]
     end
+    
+    it "should include a status change" do
+      page = pages(:first)
+      page.status_id = Status[:draft].id
+      page.diff.should include(:status_id)
+      page.diff[:status_id].should == [Status[:published].id, Status[:draft].id]
+    end
+    
   end
 
   describe "#find_by_url" do

@@ -54,4 +54,14 @@ describe "/admin/versions/_diff.html.haml" do
     response.should have_selector("span.to", :content => "ArchivePage")
   end
   
+  it "should have a changed status" do
+    page = pages(:published)
+    page.update_attributes(:status_id => Status[:draft].id)
+    @version = page.versions.current
+    render 'admin/versions/_diff.html.haml', :locals => {:version => @version}
+    response.should have_selector("span.from", :content => "Published")
+    response.should have_selector("span.to", :content => "Draft")
+  end
+  
+  
 end

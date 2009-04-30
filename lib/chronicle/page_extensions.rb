@@ -16,7 +16,7 @@ module Chronicle::PageExtensions
     
     base.send :include, ActiveRecord::Diff
     base.send :alias_method_chain, :diff, :page_associations
-    base.send(:diff, {:include => [:layout_id, :class_name]})
+    base.send(:diff, {:include => [:layout_id, :class_name, :status_id]})
   end
   
   def update_without_callbacks_with_draft_versioning

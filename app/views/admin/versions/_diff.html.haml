@@ -22,9 +22,6 @@
       %span= field_diff(version.diff[:class_name] || [version.instance.class_name])
     %p
       %label Status:
-      %span
-        %span.from Foo
-        &rarr;
-        %span.to Bar
+      %span= status_diff(version)
   %span.clear
   = updated_stamp(version.instance)

@@ -41,7 +41,23 @@ describe Admin::VersionsHelper do
       version.stub!(:diff).and_return({})
       helper.layout_diff(version).should == "Foo"
     end
+  end
+  
+  describe "#status_diff" do
+    it "should format the status field's diff output when status_id changed" do
+      version = stub(Version)
+      version.stub!(:diff).and_return(:status_id => [Status[:draft].id, Status[:published].id])
+      helper.status_diff(version).should == helper.field_diff(["Draft", "Published"])
+    end
     
+    it "should format the status field when no change" do
+      version = stub(Version)
+      instance = stub(Page)
+      instance.stub!(:status_id).and_return(Status[:published].id)
+      version.stub!(:instance).and_return(instance)
+      version.stub!(:diff).and_return({})
+      helper.status_diff(version).should == "Published"
+    end
   end
   
   describe "#part_diff" do
