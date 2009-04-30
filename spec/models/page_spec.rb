@@ -174,6 +174,13 @@ describe Page do
       page.diff.should include(:layout_id)
       page.diff[:layout_id].should == [nil, layout_id(:main)]
     end
+    
+    it "should include a page type change" do
+      page = pages(:first)
+      page.class_name = "ArchivePage"
+      page.diff.should include(:class_name)
+      page.diff[:class_name].should == [nil, "ArchivePage"]
+    end
   end
 
   describe "#find_by_url" do
