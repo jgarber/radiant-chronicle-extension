@@ -31,6 +31,39 @@ describe Admin::VersionsHelper do
       
       helper.field_diff(version, :title).should == "Foo"
     end
+    it "should return an empty string by default when a field is empty" do
+      version = stub(Version)
+      instance = stub(Page)
+      instance.stub!(:class_name).and_return("")
+      version.stub!(:instance).and_return(instance)
+      version.stub!(:diff).and_return({})
+      
+      helper.field_diff(version, :class_name).should == ""
+    end
+    it "should return the provided empty_value when a field is empty" do
+      version = stub(Version)
+      instance = stub(Page)
+      instance.stub!(:class_name).and_return("")
+      version.stub!(:instance).and_return(instance)
+      version.stub!(:diff).and_return({})
+      
+      helper.field_diff(version, :class_name, "empty").should == "empty"
+    end
+    it "should return the provided empty_value when changing to or from empty value" do
+      version = stub(Version)
+      version.stub!(:diff).and_return({:class_name => ["", "ArchivePage"]})
+      
+      helper.field_diff(version, :class_name, "empty").should == helper.format_diff(["empty", "ArchivePage"])
+    end
+    it "should HTML-escape the provided empty_value" do
+      version = stub(Version)
+      instance = stub(Page)
+      instance.stub!(:class_name).and_return(nil)
+      version.stub!(:instance).and_return(instance)
+      version.stub!(:diff).and_return({})
+      
+      helper.field_diff(version, :class_name, "<normal>").should == "&lt;normal&gt;"
+    end
   end
 
   describe "#layout_diff" do

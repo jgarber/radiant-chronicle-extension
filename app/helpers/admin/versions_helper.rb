@@ -11,9 +11,9 @@ module Admin::VersionsHelper
     end
   end
   
-  def field_diff(version, field, nil_value='')
+  def field_diff(version, field, empty_value='')
     array = version.diff[field] || [version.instance.send(field)]
-    return nil_value if array.compact.empty?
+    array.collect! {|a| (a.nil? || a.empty?) ? h(empty_value) : a }
     format_diff(array)
   end
   
