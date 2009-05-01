@@ -1,34 +1,14 @@
 module Admin::TimelineHelper
   
-  def timeline(page)
-    current_version = nil
-    page, current_version = page.instance, page if page.is_a?(Version)
-    versions = page.versions
-    content_tag(:div, :id=>"timeline") do
-      content_tag(:ol) do
-        working_version_node +
-        page.versions.collect do |version|
-          version_node(version)
-        end.join
-      end
+  def marker_for_version(version)
+    case
+    when version.only_visible_in_dev_mode? && version.current?
+      marker(:dev)
+    when version.current?
+      marker("dev-and-live")
+    when version.current_live?
+      marker(:live)
     end
-  end
-  
-  def version_node(version)
-    content_tag(:li, :id => "version-#{version.number}") do
-      tags = [ version_icon(version) ]
-      tags << version_tooltip(version)
-      case
-      when version.only_visible_in_dev_mode? && version.current?
-        tags << marker(:dev)
-      when version.current?
-        tags << marker("dev-and-live")
-      when version.current_live?
-        tags << marker(:live)
-      end
-      tags.join
-    end
-    
   end
   
   def marker(type)
