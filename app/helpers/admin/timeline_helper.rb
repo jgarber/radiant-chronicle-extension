@@ -6,7 +6,7 @@ module Admin::TimelineHelper
     versions = page.versions
     content_tag(:div, :id=>"timeline") do
       content_tag(:ol) do
-        this_version_node +
+        working_version_node +
         page.versions.collect do |version|
           version_node(version)
         end.join
@@ -40,10 +40,11 @@ module Admin::TimelineHelper
     tag(:img, :id=>"version-#{version.number}-icon", :src=>"/images/admin/#{version.instance.status.name.downcase}.png", :class=>"timeline-icon")
   end
   
-  def this_version_node
-    content_tag(:li, :id => "this") do
-      tag(:img, :id=>"this-icon", :src=>"/images/admin/this.png", :class=>"timeline-icon")
-    end + this_version_tooltip
+  def working_version_node
+    content_tag(:li, :id => "working-version") do
+      tag(:img, :id=>"working-version-icon", :src=>"/images/admin/working.png", :class=>"timeline-icon") + 
+      marker(:this)
+    end + working_version_tooltip
   end
   
   def version_tooltip(version)
@@ -51,8 +52,8 @@ module Admin::TimelineHelper
     javascript_tag "attach_help_balloon(#{version.number}, '#{data_url}');"
   end
   
-  def this_version_tooltip
-    node = "$('this-icon')";
+  def working_version_tooltip
+    node = "$('working-version-icon')";
     javascript_tag <<-CODE
       new HelpBalloon({
         content: "You are currently editing this version.",

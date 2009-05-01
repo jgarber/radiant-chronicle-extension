@@ -3,7 +3,7 @@
   display:inline;
   width: 500px;
   text-align: right;
-  padding-top: 28px;
+  padding-top: 24px;
   margin-right: 6px;
 }
 #timeline ol {
@@ -32,6 +32,11 @@
   position: absolute;
   right: -8px;
   top: -22px;
+}
+#timeline li #this-marker.marker {
+  top: 12px;
+  right: 0;
+  cursor: auto;
 }
 #timeline li img {
   padding: 0;

@@ -10,7 +10,9 @@ describe Admin::TimelineHelper do
   
   it "should have a node for the version I am currently editing" do
     page = pages(:draft)
-    helper.timeline(page).should have_selector("li", :id=>"this")
+    helper.timeline(page).should have_selector("li", :id=>"working-version") do |li|
+      li.should have_marker(:this)
+    end
   end
   
   it "should produce a dev flag on a first-version draft" do
