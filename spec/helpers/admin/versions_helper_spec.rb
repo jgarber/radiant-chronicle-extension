@@ -2,10 +2,34 @@ require File.dirname(__FILE__) + '/../../spec_helper'
 
 describe Admin::VersionsHelper do
   
+  describe "#format_diff" do
+    it "should format a diff array with two elements" do
+      helper.format_diff(["Foo", "Bar"]).should == %Q{<span class="from">Foo</span> &rarr; <span class="to">Bar</span>}
+    end
+    
+    it "should format a diff array with one element" do
+      helper.format_diff(["Foo"]).should == "Foo"
+    end
+  end
+  
   describe "#field_diff" do
-    it "should format a field's diff output" do
-      helper.field_diff(["Foo"]).should == "Foo"
-      helper.field_diff(["Foo", "Bar"]).should == %Q{<span class="from">Foo</span> &rarr; <span class="to">Bar</span>}
+    it "should format a field's diff output when the field changes" do
+      version = stub(Version)
+      instance = stub(Page)
+      instance.stub!(:title).and_return("The Page Title")
+      version.stub!(:instance).and_return(instance)
+      version.stub!(:diff).and_return(:title => ["Foo", "Bar"])
+      
+      helper.field_diff(version, :title).should == helper.format_diff(["Foo", "Bar"])
+    end
+    it "should use the field from the instance when not present in the diff hash" do
+      version = stub(Version)
+      instance = stub(Page)
+      instance.stub!(:title).and_return("Foo")
+      version.stub!(:instance).and_return(instance)
+      version.stub!(:diff).and_return({})
+      
+      helper.field_diff(version, :title).should == "Foo"
     end
   end
 
@@ -18,7 +42,7 @@ describe Admin::VersionsHelper do
       layout_2.should_receive(:name).and_return("Bar")
       Layout.should_receive(:find).twice.and_return(layout_1, layout_2)
       version.stub!(:diff).and_return(:layout_id => [layout_1.id, layout_2.id])
-      helper.layout_diff(version).should == helper.field_diff(["Foo", "Bar"])
+      helper.layout_diff(version).should == helper.format_diff(["Foo", "Bar"])
     end
     
     it "should format the layout field's diff output when layout changed from nil" do
@@ -27,7 +51,7 @@ describe Admin::VersionsHelper do
       layout_2.should_receive(:name).and_return("Bar")
       Layout.should_receive(:find).once.with(layout_2.id).and_return(layout_2)
       version.stub!(:diff).and_return(:layout_id => [nil, layout_2.id])
-      helper.layout_diff(version).should == helper.field_diff(["<inherit>", "Bar"])
+      helper.layout_diff(version).should == helper.format_diff(["&lt;inherit&gt;", "Bar"])
     end
     
     it "should format the layout field when no change" do
@@ -50,14 +74,13 @@ describe Admin::VersionsHelper do
       version.stub!(:diff).and_return({})
       helper.layout_diff(version).should == "&lt;inherit&gt;"
     end
-    
   end
   
   describe "#status_diff" do
     it "should format the status field's diff output when status_id changed" do
       version = stub(Version)
       version.stub!(:diff).and_return(:status_id => [Status[:draft].id, Status[:published].id])
-      helper.status_diff(version).should == helper.field_diff(["Draft", "Published"])
+      helper.status_diff(version).should == helper.format_diff(["Draft", "Published"])
     end
     
     it "should format the status field when no change" do

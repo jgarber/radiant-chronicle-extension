@@ -1,6 +1,7 @@
 module Admin::VersionsHelper
-  def field_diff(*array)
+  def format_diff(*array)
     array = array.first if array.first.is_a?(Array)
+    return "" if array.compact.empty?
     if array.length > 1
       content_tag(:span, array[0], :class => "from") +
       " &rarr; " +
@@ -8,6 +9,12 @@ module Admin::VersionsHelper
     else
       array.first
     end
+  end
+  
+  def field_diff(version, field, nil_value='')
+    array = version.diff[field] || [version.instance.send(field)]
+    return nil_value if array.compact.empty?
+    format_diff(array)
   end
   
   def part_diff(array)
@@ -29,12 +36,12 @@ module Admin::VersionsHelper
     nil_value = h("<inherit>")
     layout_ids = version.diff[:layout_id] || [version.instance.layout_id]
     return nil_value if layout_ids.compact.empty?
-    field_diff layout_ids.map {|layout_id| layout_id.nil? ? nil_value : Layout.find(layout_id).name }
+    format_diff layout_ids.map {|layout_id| layout_id.nil? ? nil_value : Layout.find(layout_id).name }
   end
 
   def status_diff(version)
     status_ids = version.diff[:status_id] || [version.instance.status_id]
     return "" if status_ids.compact.empty?
-    field_diff status_ids.map {|status_id| status_id.nil? ? "" : Status.find(status_id).name }
+    format_diff status_ids.map {|status_id| status_id.nil? ? "" : Status.find(status_id).name }
   end
 end

@@ -4,11 +4,11 @@
     %tbody
       %tr
         %th{:class=>"label"} Page Title:
-        %td{:class=>"field"}= field_diff(version.diff[:title] || [version.instance.title])
+        %td{:class=>"field"}= field_diff(version, :title)
       - if version.diff[:slug]
         %tr
           %th{:class=>"label"} Slug:
-          %td{:class=>"field"}= field_diff(version.diff[:slug])
+          %td{:class=>"field"}= field_diff(version, :slug)
   %h3 Page Parts:
   #pages
     - version.diff[:parts].each do |part|
@@ -19,7 +19,7 @@
       %span= layout_diff(version)
     %p
       %label Page Type:
-      %span= field_diff(version.diff[:class_name] || [version.instance.class_name])
+      %span= field_diff(version, :class_name)
     %p
       %label Status:
       %span= status_diff(version)
