@@ -1,8 +1,9 @@
 #timeline
   %ol
-    = working_version_node
+    = working_version_node unless @version
     - @page.versions.collect do |version|
       %li{:id => "version-#{version.number}"}
         = version_icon(version)
         = version_tooltip(version)
         = marker_for_version(version)
+        = marker(:this) if @version && version.id == @version.id

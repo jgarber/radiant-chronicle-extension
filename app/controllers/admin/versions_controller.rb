@@ -8,6 +8,7 @@ class Admin::VersionsController < ApplicationController
 
   def show
     @version = Version.find(params[:id])
+    @page = @version.versionable
   end
 
   def summary

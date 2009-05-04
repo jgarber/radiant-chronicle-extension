@@ -7,13 +7,35 @@ describe "/admin/_timeline.html.haml" do
     template.send :extend, Admin::TimelineHelper
   end
   
-  it "should have a node for the version I am currently editing" do
-    assigns[:page] = pages(:draft)
-    render 'admin/_timeline.html.haml'
-    response.should have_selector("li", :id=>"working-version") do |li|
-      li.should have_marker(:this)
+  describe "when used in the context of a page" do
+    it "should have a node for the working version, which I am currently editing" do
+      assigns[:page] = pages(:draft)
+      render 'admin/_timeline.html.haml'
+      response.should have_selector("li", :id=>"working-version") do |li|
+        li.should have_marker(:this)
+      end
     end
   end
+  
+  describe "when used in the context of a version" do
+    before(:each) do
+      assigns[:version] = pages(:draft).versions.current
+      assigns[:page] = pages(:draft)
+    end
+
+    it "should have a chevron on the version I am currently viewing" do
+      render 'admin/_timeline.html.haml'
+      response.should have_selector("li", :id=>"version-1") do |li|
+        li.should have_marker(:this)
+      end
+    end
+    
+    it "should not have a working version node" do
+      render 'admin/_timeline.html.haml'
+      response.should_not have_selector("li", :id=>"working-version")
+    end
+  end
+  
   
   it "should produce a dev flag on a first-version draft" do
     assigns[:page] = pages(:draft)

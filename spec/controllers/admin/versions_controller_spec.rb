@@ -13,6 +13,13 @@ describe Admin::VersionsController do
       response.should be_success
     end
   end
+
+  describe "GET 'show'" do
+    it " should be successful" do
+      get 'show', :id => pages(:published).versions.first.id
+      response.should be_success
+    end
+  end
   
   describe "GET 'summary'" do
     it " should be successful" do

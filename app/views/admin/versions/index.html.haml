@@ -4,17 +4,13 @@
   %thead
     %tr
       %th Version
+      %th Page
       %th User
       %th Time
-      %th Diff
   %tbody
     - @versions.each do |version|
       %tr
-        %td
-          = link_to version.instance.title, edit_admin_page_path(version.instance)
-          %small.login
-            Version
-            = version.number
+        %td= link_to "Version #{version.number}", admin_version_path(version)
+        %td= link_to version.instance.title, edit_admin_page_path(version.instance)
         %td= version.instance.updated_by ? version.instance.updated_by.name : ""
         %td= version.created_at
-        %td= link_to "Diff", admin_version_path(version)

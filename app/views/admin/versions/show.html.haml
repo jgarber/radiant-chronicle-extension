@@ -1,7 +1,6 @@
-= timeline(@version.instance)
+= render :partial => 'admin/timeline'
 %h1
-  Version
-  = @version.number
+  == Version #{@version.number}
   of
   = link_to @version.instance.title, edit_admin_page_path(@version.instance)
 = render :partial => 'diff', :locals => {:version => @version}

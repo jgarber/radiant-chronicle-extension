@@ -53,3 +53,36 @@ end
 Then /^change the live version$/ do
   @page.reload.title.should == "Edited"
 end
+
+Given /^I have a page with more than one version$/ do
+  Given "I have a published page with a draft"
+  @page.status = Status[:published]
+  @page.save
+end
+
+When /^I view a version$/ do
+  visit admin_versions_path
+  click_link "Version 2"
+end
+
+When /^I click on a different version$/ do
+  pending
+end
+
+Then /^I should see a timeline$/ do
+  response.should have_selector("#timeline")
+end
+
+Then /^the working version should have a chevron to indicate where I am$/ do
+  response.should have_selector("#working-version #this-marker")
+end
+
+Then /^the diffed version should have a chevron to indicate where I am$/ do
+  response.should contain("Version 2")
+  response.should have_selector("#version-2 #this-marker")
+end
+
+Then /^I should be taken to that version's diff$/ do
+  pending
+end
+
