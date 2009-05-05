@@ -25,7 +25,9 @@ module Webrat
       end
       
       def status_matcher(stringlike)
-        stringlike.should HaveSelector.new("img", :id=>"version-#{@version_number}-icon",   :src=>"/images/admin/#{@status.to_s}.png", :class=>"timeline-icon")
+        stringlike.should HaveSelector.new("a") do
+          HaveSelector.new("img", :id=>"version-#{@version_number}-icon",   :src=>"/images/admin/#{@status.to_s}.png", :class=>"timeline-icon")
+        end
       end
       
     end

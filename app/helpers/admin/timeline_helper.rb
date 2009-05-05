@@ -17,7 +17,8 @@ module Admin::TimelineHelper
   end
   
   def version_icon(version)
-    tag(:img, :id=>"version-#{version.number}-icon", :src=>"/images/admin/#{version.instance.status.name.downcase}.png", :class=>"timeline-icon")
+    icon = tag(:img, :id=>"version-#{version.number}-icon", :src=>"/images/admin/#{version.instance.status.name.downcase}.png", :class=>"timeline-icon")
+    link_to icon, admin_version_path(version)
   end
   
   def working_version_node

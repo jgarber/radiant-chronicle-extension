@@ -34,6 +34,13 @@ describe "/admin/_timeline.html.haml" do
       render 'admin/_timeline.html.haml'
       response.should_not have_selector("li", :id=>"working-version")
     end
+    
+    it "should have links to other versions" do
+      render 'admin/_timeline.html.haml'
+      response.should have_selector("li", :id=>"version-1") do |li|
+        li.should have_selector("a", :href => "/admin/versions/#{assigns[:version].id}")
+      end
+    end
   end
   
   

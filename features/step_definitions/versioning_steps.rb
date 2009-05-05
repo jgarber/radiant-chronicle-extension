@@ -63,26 +63,30 @@ end
 When /^I view a version$/ do
   visit admin_versions_path
   click_link "Version 2"
+  @current_version = 2
 end
 
 When /^I click on a different version$/ do
-  pending
+  @current_version.should == 2
+  click_link "version-1"
+  @current_version = 1
 end
 
 Then /^I should see a timeline$/ do
   response.should have_selector("#timeline")
 end
 
-Then /^the working version should have a chevron to indicate where I am$/ do
-  response.should have_selector("#working-version #this-marker")
+Then /^the timeline should have a chevron to indicate where I am$/ do
+  case request.path
+  when /pages/
+    response.should have_selector("#working-version #this-marker")
+  when /versions/
+    response.should contain("Version #{@current_version}")
+    response.should have_selector("#version-#{@current_version} #this-marker")
+  end
 end
 
-Then /^the diffed version should have a chevron to indicate where I am$/ do
-  response.should contain("Version 2")
-  response.should have_selector("#version-2 #this-marker")
-end
-
-Then /^I should be taken to that version's diff$/ do
-  pending
+Then /^I should see that version's diff$/ do
+  response.should contain("Version #{@current_version}")
 end
 
