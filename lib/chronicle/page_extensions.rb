@@ -21,6 +21,7 @@ module Chronicle::PageExtensions
   
   def update_without_callbacks_with_draft_versioning
     if self.status_id < Status[:published].id # Draft or Reviewed
+      update_with_lock([self.class.locking_column]) # Only update the locking column, not other attributes
       true # Don't save page; versioning callbacks will save it in the versions table
     else
       update_without_callbacks_without_draft_versioning

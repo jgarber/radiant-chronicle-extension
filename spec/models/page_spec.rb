@@ -293,6 +293,51 @@ describe Page do
       
     end
     
+    describe "optimistic locking" do
+      dataset :pages
+      
+      it "should prevent updating a stale page" do
+        p1 = pages(:first)
+        p2 = pages(:first)
+        
+        p1.title = "Changed"
+        p1.save
+        
+        p2.title = "should fail"
+        lambda {
+          p2.save
+        }.should raise_error(ActiveRecord::StaleObjectError)
+      end
+      
+      it "should prevent updating a stale page that has a draft" do
+        p1 = pages(:first)
+        p2 = pages(:first)
+        
+        p1.title = "Changed"
+        p1.status = Status[:draft]
+        p1.save
+        
+        p2.title = "should fail"
+        lambda {
+          p2.save
+        }.should raise_error(ActiveRecord::StaleObjectError)
+      end
+      
+      it "should prevent updating a stale page as a draft" do
+        p1 = pages(:first)
+        p2 = pages(:first)
+        
+        p1.title = "Changed"
+        p1.save
+        
+        p2.title = "should fail"
+        p2.status = Status[:draft]
+        lambda {
+          p2.save
+        }.should raise_error(ActiveRecord::StaleObjectError)
+      end
+      
+    end
   end
   
   def create_new_version
