@@ -22,14 +22,7 @@ Feature: view pages on site
     When I click the dev-and-live marker
     Then I should be taken to the page in dev mode
   
-  Scenario: check the 'view page after saving' checkbox - live
-    Given I am editing a page with a draft
-    And I changed the status to Published
-    When I check "View page after saving"
-    And I press "Save and Continue Editing"
-    Then the page should open on the live site
-  
-  Scenario: check the 'view page after saving' checkbox - dev
+  Scenario: check the 'view page after saving' checkbox
     Given I am editing a published page
     And I changed the status to Draft
     When I check "View page after saving"

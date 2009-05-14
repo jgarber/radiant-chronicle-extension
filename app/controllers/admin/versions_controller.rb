@@ -1,5 +1,5 @@
 class Admin::VersionsController < ApplicationController
-  include Chronicle::PagesControllerExtensions
+  include Chronicle::Interface
   before_filter :add_chronicle_stylesheet, :only => [:index, :show, :summary, :diff]
   
   def index

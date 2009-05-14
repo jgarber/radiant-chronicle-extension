@@ -31,6 +31,20 @@ describe Admin::PagesController do
   describe "previewing a page" do
     integrate_views
     
+    it "should add javascript to the flash when view_after_saving is set" do
+      @page = pages(:first)
+      put :update, :id=>@page.id, "continue"=>"Save and Continue Editing", "page"=>params_for_page(@page), "view_after_saving"=>"1"
+      response.should be_redirect
+      flash[:javascript].should =~ %r{window.open}
+    end
+
+    it "should not add javascript to the flash when view_after_saving is not set" do
+      @page = pages(:first)
+      put :update, :id=>@page.id, "continue"=>"Save and Continue Editing", "page"=>params_for_page(@page)
+      response.should be_redirect
+      flash[:javascript].should be_nil
+    end
+    
     it "should redirect to the page on the same host by default" do
       get :show, :id => page_id(:first)
       response.should be_redirect
@@ -48,31 +62,9 @@ describe Admin::PagesController do
       response.should be_redirect
       response.should redirect_to("http://dev.test.host" + pages(:first).url)
     end
-    
-    it "should render waiting for save page when lock_version doesn't yet exist" do
-      get :show, :id => page_id(:first), :lock_version => pages(:first).lock_version + 1
-      response.should be_success
-      response.should render_template("admin/pages/show")
-    end
-    
-    it "should redirect when lock_version does exist" do
-      get :show, :id => page_id(:first), :lock_version => pages(:first).lock_version
-      response.should be_redirect
-      response.should redirect_to("http://dev.test.host" + pages(:first).url)
-    end
-    
-    it "should return rjs when the waiting page inquires about the status and lock_version doesn't yet exist" do
-      xhr :get, :show, :id => page_id(:first), :lock_version => pages(:first).lock_version + 1, :delay => 50
-      response.should be_success
-      response.should render_template("admin/pages/show")
-      response.should have_text("wait_then_check_if_saved(100);")
-    end
-    
-    it "should render redirect rjs when lock_version does exist" do
-      xhr :get, :show, :id => page_id(:first), :lock_version => pages(:first).lock_version
-      response.should be_success
-      response.should have_text(%{window.location.href = "http://dev.test.host/first/";})
-    end
-    
+  end
+  
+  def params_for_page(page)
+    {"slug"=>page.slug, "class_name"=>page.class_name, "title"=>page.title, "breadcrumb"=>page.breadcrumb, "lock_version"=>page.lock_version, "parts"=>[{"name"=>"body", "filter_id"=>"", "content"=>"test"}], "status_id"=>page.status_id, "layout_id"=>page.layout_id, "parent_id"=>page.parent_id}
   end
 end

@@ -40,15 +40,7 @@ Given /^I changed the status to (.*)$/ do |status|
   select status.titleize, :from => "Status"
 end
 
-When /^I click the save button$/ do
-  pending
-end
-
-Then /^the page should open on the live site$/ do
-  pending
-end
-
 Then /^the page should open on the dev site$/ do
-  pending
+  response.should contain("window.open")
 end
 
