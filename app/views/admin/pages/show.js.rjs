@@ -1,0 +1,1 @@
+page << "wait_then_check_if_saved(#{params[:delay].to_i * 2});"

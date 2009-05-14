@@ -1,0 +1,9 @@
+%p Please wait a moment while the page is saved...
+:javascript
+  function check_if_saved_yet(delay) {
+    #{remote_function :url => admin_page_path(:id => params[:id], :lock_version => params[:lock_version]), :method => :get,  :with => "'delay=' + delay"}
+  }
+  function wait_then_check_if_saved(delay) {
+    setTimeout("check_if_saved_yet("+ delay+")", delay);
+  }
+  wait_then_check_if_saved(50);

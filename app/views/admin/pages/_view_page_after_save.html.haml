@@ -1,0 +1,12 @@
+= check_box_tag 'view_after_saving'
+= label_tag "view_after_saving", "View page after saving"
+- content_for :page_scripts do
+  :plain
+    document.observe("dom:loaded", function() {
+      $('edit_page').observe('submit', function() {
+        if ($F('view_after_saving')) {
+          previewWindow = window.open('#{admin_page_path(@page, :lock_version => @page.lock_version + 1)}','radiant_cms_preview');
+          if (window.focus) {previewWindow.focus();}
+        }
+      });
+    });

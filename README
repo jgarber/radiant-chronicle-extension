@@ -26,7 +26,9 @@ If you went to example.com/ you would see version 24. If you went to
 dev.example.com/ you would see version 25.
 
 Many people overlook the dev mode feature of Radiant. If you don't know about
-it, see http://wiki.radiantcms.org/How_To_Setup_Dev_Mode.
+it, see http://wiki.radiantcms.org/How_To_Setup_Dev_Mode. You can also set a
+live.host configuration option if you don't access Radiant admin at the live
+host.
 
 Some terminology used in the specs:
 * The "current version" is the highest-numbered version, a.k.a. the "current

@@ -116,9 +116,52 @@ describe "/admin/_timeline.html.haml" do
     opts = {:class=>"marker"}
     if type
       type = type.to_s
-      opts.merge! :id=>"#{type}-marker", :src=>"/images/admin/#{type}.png"
+      opts.merge! :id=>"#{type}-marker"
     end
-    have_selector("img", opts)
+    have_selector("img", opts) # Works only with the monkey patch below
   end
   
+end
+
+# Monkey patch for https://webrat.lighthouseapp.com/projects/10503/tickets/234-have_selector-and-have_xpath-dont-match-descendants-in-blocks
+# Without it, img inside a fails to match
+module Webrat
+  module Matchers
+    
+    class HaveXpath #:nodoc:
+      def rexml_matches(stringlike)
+        if REXML::Node === stringlike || Array === stringlike
+          @query = query.map { |q| q.gsub(%r'^//', './/') }
+        else
+          @query = query
+        end
+
+        add_options_conditions_to(@query)
+
+        @document = Webrat.rexml_document(stringlike)
+
+        @query.map do |q|
+          if @document.is_a?(Array)
+            @document.map { |d| REXML::XPath.match(d, q) }
+          else
+            REXML::XPath.match(@document, q)
+          end
+        end.flatten.compact
+      end
+    
+      def nokogiri_matches(stringlike)
+        if Nokogiri::XML::NodeSet === stringlike
+          @query = query.gsub(%r'^//', './/')
+        else
+          @query = query
+        end
+        
+        add_options_conditions_to(@query)
+        
+        @document = Webrat::XML.document(stringlike)
+        @document.xpath(*@query)
+      end
+      
+    end
+  end
 end

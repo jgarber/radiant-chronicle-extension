@@ -1,4 +1,5 @@
 module Admin::TimelineHelper
+  include Admin::PreviewHelper
   
   def marker_for_version(version)
     case
@@ -13,7 +14,17 @@ module Admin::TimelineHelper
   
   def marker(type)
     type = type.to_s
-    tag(:img, :class=>"marker", :id=>"#{type}-marker",   :src=>"/images/admin/#{type}.png")
+    image_tag = image_tag("/images/admin/#{type}.png", :class=>"marker", :id=>"#{type}-marker")
+    case type
+    when "live"
+      link_to(image_tag, live_page_url(@page))
+    when "dev"
+      link_to(image_tag, dev_page_url(@page))
+    when "dev-and-live"
+      link_to(image_tag, dev_page_url(@page))
+    else
+      image_tag
+    end
   end
   
   def version_icon(version)

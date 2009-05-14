@@ -16,6 +16,8 @@ Given /^I have a (.*) page$/ do |status|
     @page = pages(:draft)
     @page.status.should == Status[:draft]
   end
+  @page.save
+  @page.reload
 end
 
 Given /^I have a (.*) page with a draft$/ do |status|
