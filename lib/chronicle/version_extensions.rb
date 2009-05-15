@@ -27,7 +27,7 @@ module Chronicle::VersionExtensions
   alias_method :current_dev?, :current?
   
   def current_live?
-    current_live = versionable.versions.find(:first, :conditions => "status_id >= #{Status[:published].id}", :order => 'number DESC')
+    current_live = versionable.versions.current_live
     current_live && (current_live.number == self.number)
   end
   

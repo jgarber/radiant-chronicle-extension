@@ -8,7 +8,7 @@ module Admin::PreviewHelper
   end
   
   def site_preview_url(mode, page)
-    page = page.current if mode == :dev
+    page = mode == :dev ? page.current_dev : page.current_live
     protocol = (@controller || self).request.protocol
     host = (@controller || self).request.host_with_port
     host = case mode

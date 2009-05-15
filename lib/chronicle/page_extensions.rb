@@ -81,6 +81,12 @@ module Chronicle::PageExtensions
   def current
     self.versioned? ? self.versions.current.instance : self
   end
+  alias_method :current_dev, :current
+
+  # The most recent live version of the page
+  def current_live
+    self.versioned? ? self.versions.current_live.instance : self
+  end
   
   # The most recent versions of children
   def current_children

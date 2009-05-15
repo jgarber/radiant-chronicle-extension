@@ -13,6 +13,7 @@ class ChronicleExtension < Radiant::Extension
   end
   
   def activate
+    ActiveRecord::Base::VersionsProxyMethods.send :include, Chronicle::VersionsProxyMethods
     Version.send :include, Chronicle::VersionExtensions
     Page.send :include, Chronicle::PageExtensions
     PagePart.send :include, Chronicle::PagePartExtensions

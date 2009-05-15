@@ -31,6 +31,9 @@ describe Admin::PreviewHelper do
         helper.site_preview_url(:live, @page).should == "http://test.host/published/"
       end
       
+      it "should not use the changed slug in live mode even when given the draft" do
+        helper.site_preview_url(:live, @page.current).should == "http://test.host/published/"
+      end
     end
   
     describe "with custom hostnames" do
