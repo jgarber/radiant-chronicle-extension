@@ -138,4 +138,8 @@ module Chronicle::PageExtensions
     end
     diff_without_page_associations(other_record).merge(:parts => parts_diff)
   end
+  
+  def versions_with_limit(limit)
+    self.versions.find(:all, :limit => limit)
+  end
 end

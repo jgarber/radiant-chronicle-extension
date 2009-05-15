@@ -1,8 +1,8 @@
 #timeline
   %ol
     = working_version_node unless @version
-    - @page.versions.collect do |version|
-      %li{:id => "version-#{version.number}"}
+    - versions_for_timeline.each_with_index do |version, i|
+      %li{:id => "version-#{version.number}", :class => version_class(i)}
         = version_icon(version)
         = version_tooltip(version)
         = marker_for_version(version)

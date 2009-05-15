@@ -109,7 +109,15 @@ describe "/admin/_timeline.html.haml" do
   end
   
   it "should make the line fade out when the timeline does not begin with version 1" do
-    pending # timeline limit is not implemented yet, but class="beginning" on the LI will make the line fade
+    page = pages(:draft_with_many_versions)
+    20.times do
+      page.save
+    end
+    page.versions.size.should > MAX_VERSIONS_VISIBLE_IN_TIMELINE
+    expected_version_number = page.versions_with_limit(MAX_VERSIONS_VISIBLE_IN_TIMELINE).last.number
+    assigns[:page] = page
+    render 'admin/_timeline.html.haml'
+    response.should have_selector("li", :class => "beginning", :id => "version-#{expected_version_number}")
   end
   
   def have_marker(type=nil)

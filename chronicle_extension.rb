@@ -6,6 +6,8 @@ class ChronicleExtension < Radiant::Extension
   description "Keeps historical versions of pages and allows drafts of published pages."
   url "http://github.com/jgarber/radiant-chronicle-extension/"
   
+  ::MAX_VERSIONS_VISIBLE_IN_TIMELINE = 14
+  
   define_routes do |map|
     map.namespace :admin, :member => { :remove => :get } do |admin|
       admin.resources :versions, :member => { :diff => :get, :summary => :get }

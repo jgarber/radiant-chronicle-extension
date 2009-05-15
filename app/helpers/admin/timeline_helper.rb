@@ -59,4 +59,17 @@ module Admin::TimelineHelper
       });
     CODE
   end
+  
+  def versions_for_timeline
+    @versions_for_timeline ||= @page.versions_with_limit(MAX_VERSIONS_VISIBLE_IN_TIMELINE)
+  end
+  
+  def version_class(index)
+    if (index+1) == versions_for_timeline.size
+      "beginning"
+    else
+      ''
+    end
+  end
+  
 end
