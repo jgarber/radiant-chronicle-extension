@@ -24,6 +24,7 @@ class VersionsDataset < Dataset::Base
       UserActionObserver.current_user = users(:existing)
       create_version
     end
+    create_versioned_page "Env Dump", :class_name => "EnvDumpPage"
   end
   
   helpers do

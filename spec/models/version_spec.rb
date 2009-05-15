@@ -18,6 +18,16 @@ describe Version do
     version.instance.should be_a(Page)
   end
   
+  it "should instantiate a draft of a different class_name" do
+    @page = pages(:env_dump)
+    @page.class_name = ""
+    @page.status_id = Status[:draft].id
+    @page.save
+    
+    @page.class.should == EnvDumpPage
+    @page.current.class.should == Page
+  end
+  
   it "should respond to #current?" do
     version = pages(:page_with_draft).versions.current
     version.current?.should be_true
