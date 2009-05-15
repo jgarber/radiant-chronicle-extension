@@ -106,6 +106,13 @@ td.status span.status.reviewed-status {
 #version-diff-popup #diff pre {
   margin: 1em 0 0;
   clear: left;
+  overflow-x: auto; /* Use horizontal scroller if needed; for Firefox 2, not needed in Firefox 3 */
+  white-space: pre-wrap; /* css-3 */
+  white-space: -moz-pre-wrap !important; /* Mozilla, since 1999 */
+  white-space: -pre-wrap; /* Opera 4-6 */
+  white-space: -o-pre-wrap; /* Opera 7 */
+  /* width: 99%; */
+  word-wrap: break-word; /* Internet Explorer 5.5+ */
 }
 #content #diff ins,
 #version-diff-popup #diff ins {

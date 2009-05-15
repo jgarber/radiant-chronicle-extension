@@ -1,4 +1,6 @@
 module Admin::VersionsHelper
+  include HTMLDiff
+  
   def format_diff(*array)
     array = array.first if array.first.is_a?(Array)
     return "" if array.compact.empty?

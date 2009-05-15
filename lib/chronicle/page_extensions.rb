@@ -111,28 +111,30 @@ module Chronicle::PageExtensions
   
   def diff_with_page_associations(other_record = nil)
     if other_record.nil?
-      old_record, new_record = self.class.find(id), self
+      parts_diff = self.parts.map do |part|
+        [part.attributes_for_diff]
+      end
     else
       old_record, new_record = self, other_record
-    end
-    parts_diff = new_record.parts.map do |new_part|
-      old_part = old_record.part(new_part.name)
-      new_part_attributes = new_part.attributes_for_diff
-      if old_part.nil?
-        [nil, new_part_attributes] # Added part
-      else
-        old_part_attributes = old_part.attributes_for_diff
-        if old_part_attributes == new_part_attributes # Because #uniq doesn't work to eliminate duplicate hashes in an array
-          [new_part_attributes] # Unchanged part
+      parts_diff = new_record.parts.map do |new_part|
+        old_part = old_record.part(new_part.name)
+        new_part_attributes = new_part.attributes_for_diff
+        if old_part.nil?
+          [nil, new_part_attributes] # Added part
         else
-          [old_part_attributes, new_part_attributes] # Changed part
+          old_part_attributes = old_part.attributes_for_diff
+          if old_part_attributes == new_part_attributes # Because #uniq doesn't work to eliminate duplicate hashes in an array
+            [new_part_attributes] # Unchanged part
+          else
+            [old_part_attributes, new_part_attributes] # Changed part
+          end
         end
       end
-    end
-    deleted_part_names = old_record.parts.map(&:name) - new_record.parts.map(&:name)
-    deleted_part_names.each do |name|
-      old_part = old_record.part(name)
-      parts_diff << [old_part.attributes_for_diff, nil] # Deleted part
+      deleted_part_names = old_record.parts.map(&:name) - new_record.parts.map(&:name)
+      deleted_part_names.each do |name|
+        old_part = old_record.part(name)
+        parts_diff << [old_part.attributes_for_diff, nil] # Deleted part
+      end
     end
     diff_without_page_associations(other_record).merge(:parts => parts_diff)
   end

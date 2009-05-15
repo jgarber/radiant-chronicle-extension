@@ -2,6 +2,4 @@
 %p.filter
   Filter:
   = format_diff(previous["filter_id"], current["filter_id"])
-%pre
-  %del= previous["content"]
-  %ins= current["content"]
+%pre= diff(h(previous["content"]), h(current["content"]))

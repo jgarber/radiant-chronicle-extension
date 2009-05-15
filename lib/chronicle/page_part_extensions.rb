@@ -2,7 +2,7 @@ module Chronicle::PagePartExtensions
   def attributes_for_diff
     {
       "name" => name,
-      "content" => content,
+      "content" => content.gsub("\r\n", "\n"),
       "filter_id" => filter_id || ""
     }
   end

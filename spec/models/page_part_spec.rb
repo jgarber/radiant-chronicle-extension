@@ -26,6 +26,11 @@ describe PagePart do
     it "should include the content" do
       @page_part.attributes_for_diff["content"].should == "Body"
     end
+
+    it 'should replace \r\n with \n in the content' do
+      @page_part.content = "Body\r\ntext"
+      @page_part.attributes_for_diff["content"].should == "Body\ntext"
+    end
     
     it "should include the filter_id" do
       @page_part.attributes_for_diff["filter_id"].should == "Textile"

@@ -122,6 +122,15 @@ describe Version do
       version.diff[:parts].should include([nil, {"name"=>"added", "filter_id"=>"", "content"=>"I added this part"}])
     end
     
+    it "should have its part stay the same when looking at the first version of a page that changed" do
+      page = pages(:published)
+      page.parts = [{"name"=>"body", "filter_id"=>"", "content"=>"Changed body"}]
+      page.save
+      version = page.versions.first
+      version.diff.should include(:parts)
+      version.diff[:parts].should == [[{"name"=>"body", "filter_id"=>"", "content"=>"Published body."}]]
+    end
+    
     it "should include a part change" do
       page = pages(:published)
       page.parts = [{"name"=>"body", "filter_id"=>"", "content"=>"Changed body"}]
