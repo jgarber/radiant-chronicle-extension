@@ -44,3 +44,7 @@ Then /^the page should open on the dev site$/ do
   response.should contain("window.open")
 end
 
+Then /^the "([^\"]*)" box should remain checked for next time\.$/ do |field_label|
+  field_labeled(field_label).should be_checked
+end
+

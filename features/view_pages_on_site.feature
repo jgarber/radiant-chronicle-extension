@@ -28,3 +28,4 @@ Feature: view pages on site
     When I check "View page after saving"
     And I press "Save and Continue Editing"
     Then the page should open on the dev site
+    And the "View page after saving" box should remain checked for next time.

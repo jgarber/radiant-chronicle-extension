@@ -17,6 +17,7 @@ module Chronicle::PagesControllerExtensions
           if (window.focus) {previewWindow.focus();}
         EOD
       end
+      session[:view_after_saving] = params[:view_after_saving]
     end
     
     def show

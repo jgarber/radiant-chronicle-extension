@@ -31,36 +31,51 @@ describe Admin::PagesController do
   describe "previewing a page" do
     integrate_views
     
-    it "should add javascript to the flash when view_after_saving is set" do
+    before(:each) do
       @page = pages(:first)
+    end
+    
+    it "should add javascript to the flash when view_after_saving is set" do
       put :update, :id=>@page.id, "continue"=>"Save and Continue Editing", "page"=>params_for_page(@page), "view_after_saving"=>"1"
       response.should be_redirect
       flash[:javascript].should =~ %r{window.open}
     end
 
     it "should not add javascript to the flash when view_after_saving is not set" do
-      @page = pages(:first)
       put :update, :id=>@page.id, "continue"=>"Save and Continue Editing", "page"=>params_for_page(@page)
       response.should be_redirect
       flash[:javascript].should be_nil
     end
     
-    it "should redirect to the page on the same host by default" do
-      get :show, :id => page_id(:first)
+    it "should set view_after_saving in the session when view_after_saving is set" do
+      put :update, :id=>@page.id, "continue"=>"Save and Continue Editing", "page"=>params_for_page(@page), "view_after_saving"=>"1"
       response.should be_redirect
-      response.should redirect_to(pages(:first).url)
+      session[:view_after_saving].should be_true
+    end
+    
+    it "should unset view_after_saving in the session when view_after_saving is not set" do
+      session[:view_after_saving] = true
+      put :update, :id=>@page.id, "continue"=>"Save and Continue Editing", "page"=>params_for_page(@page)
+      response.should be_redirect
+      session[:view_after_saving].should_not be_true
+    end
+    
+    it "should redirect to the page on the same host by default" do
+      get :show, :id => @page.id
+      response.should be_redirect
+      response.should redirect_to(@page.url)
     end
     
     it "should redirect to the live page when live mode is specified" do
-      get :show, :id => page_id(:first), :mode => 'live'
+      get :show, :id => @page.id, :mode => 'live'
       response.should be_redirect
-      response.should redirect_to("http://test.host" + pages(:first).url)
+      response.should redirect_to("http://test.host" + @page.url)
     end
     
     it "should redirect to the dev page when dev mode is specified" do
-      get :show, :id => page_id(:first), :mode => 'dev'
+      get :show, :id => @page.id, :mode => 'dev'
       response.should be_redirect
-      response.should redirect_to("http://dev.test.host" + pages(:first).url)
+      response.should redirect_to("http://dev.test.host" + @page.url)
     end
   end
   
