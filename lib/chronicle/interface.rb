@@ -1,8 +1,8 @@
 module Chronicle::Interface
   def self.included(base)
     base.class_eval {
-      before_filter :add_chronicle_stylesheet, :only => [:index, :edit, :new]
-      before_filter :add_chronicle_javascript, :only => [:edit, :new]
+      before_filter :add_chronicle_stylesheet, :only => [:index, :edit, :new, :create, :update]
+      before_filter :add_chronicle_javascript, :only => [:edit, :new, :create, :update]
       include InstanceMethods
       helper 'admin/timeline'
     }
