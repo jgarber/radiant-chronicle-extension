@@ -238,6 +238,14 @@ describe Page do
       @home.find_by_url('/nothing-doing/', false).title.should == "What are you looking 404?"
     end
     
+    it "should return nil when it cannot find the page or the FileNotFound page" do
+      pages(:file_not_found).destroy
+      pages(:draft_file_not_found).destroy
+      
+      @home.find_by_url('/nothing-doing/nada.jpg').should be_nil      
+      @home.find_by_url('/nothing-doing/nada.jpg', false).should be_nil      
+    end
+    
     describe "when changed slug in draft" do
       before(:each) do
         parent = pages(:parent)

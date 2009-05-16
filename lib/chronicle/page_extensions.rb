@@ -72,7 +72,8 @@ module Chronicle::PageExtensions
         file_not_found_names = file_not_found_types.collect { |x| x.name }
         condition = (['class_name = ?'] * file_not_found_names.length).join(' or ')
         condition = "status_id = #{Status[:published].id} and (#{condition})" if live
-        children.find(:first, :conditions => [condition] + file_not_found_names).current
+        file_not_found_page = children.find(:first, :conditions => [condition] + file_not_found_names)
+        file_not_found_page.current if file_not_found_page
       end
     end
   end
