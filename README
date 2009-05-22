@@ -62,6 +62,8 @@ Someday/maybe:
 (from the radiant application root)
   
   git clone git://github.com/jgarber/radiant-chronicle-extension.git vendor/extensions/chronicle
+  git submodule init
+  git submodule update
   rake RAILS_ENV=production db:migrate:extensions
   rake RAILS_ENV=production radiant:update
   
