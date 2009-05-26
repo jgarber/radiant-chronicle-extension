@@ -5,35 +5,41 @@ class ChronicleExtension < Radiant::Extension
   version "1.0"
   description "Keeps historical versions of pages and allows drafts of published pages."
   url "http://github.com/jgarber/radiant-chronicle-extension/"
-  
+
   ::MAX_VERSIONS_VISIBLE_IN_TIMELINE = 14
-  
+
   define_routes do |map|
     map.namespace :admin, :member => { :remove => :get } do |admin|
       admin.resources :versions, :member => { :diff => :get, :summary => :get }
     end
   end
-  
+
   def activate
     require 'chronicle/diff'
-    ActiveRecord::Base::VersionsProxyMethods.send :include, Chronicle::VersionsProxyMethods
-    Version.send :include, Chronicle::VersionExtensions
-    Page.send :include, Chronicle::PageExtensions
-    PagePart.send :include, Chronicle::PagePartExtensions
-    Admin::ResourceController.send :include, Chronicle::ResourceControllerExtensions
+    ActiveRecord::Base::VersionsProxyMethods.class_eval { include Chronicle::VersionsProxyMethods }
+    Version.class_eval { include Chronicle::VersionExtensions }
+    Page.class_eval { include Chronicle::PageExtensions }
+    PagePart.class_eval { include Chronicle::PagePartExtensions }
+    Snippet.class_eval { include Chronicle::SimpleModelExtensions }
+    
+    Admin::ResourceController.class_eval { include Chronicle::ResourceControllerExtensions }
+    Admin::PagesController.class_eval { include Chronicle::Interface }
+    Admin::PagesController.class_eval { include Chronicle::PagesControllerExtensions }
+    Admin::SnippetsController.class_eval { include Chronicle::Interface }
+
     admin.page.edit.add :main, "admin/timeline", :before => "edit_header"
-    Admin::PagesController.send :include, Chronicle::Interface
-    Admin::PagesController.send :include, Chronicle::PagesControllerExtensions
-    admin.page.edit.add :popups, 'admin/pages/version_diff_popup'
+    admin.page.edit.add :main, 'admin/version_diff_popup'
     admin.page.edit.add :form_bottom, 'view_page_after_save'
     admin.page.edit.add :main, 'open_preview_window'
     admin.page.index.add :sitemap_head, 'open_preview_window'
-    
+
+    admin.snippet.edit.add :main, "admin/timeline", :before => "edit_header"
+    admin.snippet.edit.add :main, 'admin/version_diff_popup'
+    # Unfortunately, the iteration local is not passed into the render_region call,
+    # so we have to override the whole template.
+    admin.snippet.index.add :tbody, 'status_cell', :before => "modify_cell"
+
     admin.tabs.add "History", "/admin/versions/", :visibility => [:all]
   end
-  
-  def deactivate
-    # admin.tabs.remove "Chronicle"
-  end
-  
+
 end

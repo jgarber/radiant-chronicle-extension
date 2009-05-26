@@ -5,6 +5,11 @@ describe "/admin/_timeline.html.haml" do
   
   before(:each) do
     template.send :extend, Admin::TimelineHelper
+    class << template
+      def model
+        @page
+      end
+    end
   end
   
   describe "when used in the context of a page" do

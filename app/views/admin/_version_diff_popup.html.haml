@@ -1,0 +1,8 @@
+- content_for :popups do
+  #version-diff-popup.popup{ :style => "display:none;" }
+    %h3
+      Version
+      %span#version-number
+    #version-diff= "Version diff goes here"
+    %p
+      = link_to 'Close', "#", :class => 'close'
