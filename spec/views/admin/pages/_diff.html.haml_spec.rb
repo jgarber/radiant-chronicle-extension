@@ -1,11 +1,15 @@
 require File.dirname(__FILE__) + '/../../../spec_helper'
 
-describe "/admin/versions/_diff.html.haml" do
+describe "/admin/pages/_diff.html.haml" do
   dataset :versions, :layouts
+  
+  before :each do
+    template.extend Admin::VersionsHelper
+  end
   
   it "should have a title even when title was not changed" do
     @version = pages(:published).versions.current
-    render 'admin/versions/_diff.html.haml', :locals => {:version => @version}
+    render 'admin/pages/_diff.html.haml', :locals => {:version => @version}
     response.should have_selector("td.field", :content => "Published")
   end
   
@@ -13,7 +17,7 @@ describe "/admin/versions/_diff.html.haml" do
     page = pages(:published)
     page.update_attributes(:title => "Published 2")
     @version = page.versions.current
-    render 'admin/versions/_diff.html.haml', :locals => {:version => @version}
+    render 'admin/pages/_diff.html.haml', :locals => {:version => @version}
     response.should have_selector("span.from", :content => "Published")
     response.should have_selector("span.to", :content => "Published 2")
   end
@@ -22,7 +26,7 @@ describe "/admin/versions/_diff.html.haml" do
     page = pages(:published)
     page.update_attributes(:slug => "published-2")
     @version = page.versions.current
-    render 'admin/versions/_diff.html.haml', :locals => {:version => @version}
+    render 'admin/pages/_diff.html.haml', :locals => {:version => @version}
     response.should have_selector("span.from", :content => "published")
     response.should have_selector("span.to", :content => "published-2")
   end
@@ -32,7 +36,7 @@ describe "/admin/versions/_diff.html.haml" do
     page.parts = [{"name"=>"body", "filter_id"=>"", "content"=>"Changed body"}]
     page.save
     @version = page.versions.current
-    render 'admin/versions/_diff.html.haml', :locals => {:version => @version}
+    render 'admin/pages/_diff.html.haml', :locals => {:version => @version}
     response.should have_selector("div.page", :content => "Changed body")
   end
   
@@ -40,7 +44,7 @@ describe "/admin/versions/_diff.html.haml" do
     page = pages(:published)
     page.update_attributes(:layout_id => layout_id(:main))
     @version = page.versions.current
-    render 'admin/versions/_diff.html.haml', :locals => {:version => @version}
+    render 'admin/pages/_diff.html.haml', :locals => {:version => @version}
     response.should have_selector("span.from", :content => "")
     response.should have_selector("span.to", :content => "Main")
   end
@@ -49,7 +53,7 @@ describe "/admin/versions/_diff.html.haml" do
     page = pages(:published)
     page.update_attributes(:class_name => "ArchivePage")
     @version = page.versions.current
-    render 'admin/versions/_diff.html.haml', :locals => {:version => @version}
+    render 'admin/pages/_diff.html.haml', :locals => {:version => @version}
     response.should have_selector("span.from", :content => "<normal>")
     response.should have_selector("span.to", :content => "ArchivePage")
   end
@@ -58,7 +62,7 @@ describe "/admin/versions/_diff.html.haml" do
     page = pages(:published)
     page.update_attributes(:status_id => Status[:draft].id)
     @version = page.versions.current
-    render 'admin/versions/_diff.html.haml', :locals => {:version => @version}
+    render 'admin/pages/_diff.html.haml', :locals => {:version => @version}
     response.should have_selector("span.from", :content => "Published")
     response.should have_selector("span.to", :content => "Draft")
   end

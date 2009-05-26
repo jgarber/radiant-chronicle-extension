@@ -1,10 +1,10 @@
 require File.dirname(__FILE__) + '/../../../spec_helper'
 
-describe "admin/versions/_part.html.haml" do
+describe "admin/versions/_part_nodiff.html.haml" do
   describe "when no fields are blank" do
     before(:each) do
       @part = {"name" => "body", "content" => "A", "filter_id" => "Textile"}
-      render :partial => 'admin/versions/part', :locals => {:part => @part}
+      render :partial => 'admin/versions/part_nodiff.html.haml', :locals => {:part => @part}
     end
   
     it "should have the part name" do
@@ -22,7 +22,7 @@ describe "admin/versions/_part.html.haml" do
   
   it "should not show the filter label when filter is blank" do
     @part = {"name" => "body", "content" => "A", "filter_id" => ""}
-    render :partial => 'admin/versions/part', :locals => {:part => @part}
+    render :partial => 'admin/versions/part_nodiff.html.haml', :locals => {:part => @part}
     response.should_not have_selector("p", :class => 'filter')
   end
 end

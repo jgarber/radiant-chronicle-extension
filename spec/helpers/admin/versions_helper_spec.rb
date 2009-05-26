@@ -129,7 +129,7 @@ describe Admin::VersionsHelper do
   describe "#part_diff" do
     describe "page wrapper" do
       before(:each) do
-        helper.should_receive(:render).and_return("rendered part")
+        helper.stub!(:render).and_return("rendered part")
       end
     
       it "should have a 'page' class" do
@@ -155,26 +155,26 @@ describe Admin::VersionsHelper do
     
     describe "rendering" do
       it "should render the 'part_diff' partial when part changed" do
-        helper.should_receive(:render).with(hash_including(:partial => 'part_diff')).and_return("rendered part")
+        helper.should_receive(:render).with(hash_including(:partial => 'admin/versions/part_diff.html.haml')).and_return("rendered part")
         diff = [{"name" => "body", "content" => "A", "filter_id" => ""},{"name" => "body", "content" => "B", "filter_id" => ""}]
         helper.part_diff(diff)
       end
       
-      it "should render the 'part' partial when part not changed" do
+      it "should render the 'part_nodiff' partial when part not changed" do
         diff = [{"name" => "body", "content" => "A", "filter_id" => ""}]
-        helper.should_receive(:render).with(hash_including(:partial => 'part', :locals => {:part => diff.first})).and_return("rendered part")
+        helper.should_receive(:render).with(hash_including(:partial => 'admin/versions/part_nodiff.html.haml', :locals => {:part => diff.first})).and_return("rendered part")
         helper.part_diff(diff)
       end
       
-      it "should render the 'part' partial when part is added" do
+      it "should render the 'part_nodiff' partial when part is added" do
         diff = [nil,{"name" => "body", "content" => "", "filter_id" => ""}]
-        helper.should_receive(:render).with(hash_including(:partial => 'part', :locals => {:part => diff.last})).and_return("rendered part")
+        helper.should_receive(:render).with(hash_including(:partial => 'admin/versions/part_nodiff.html.haml', :locals => {:part => diff.last})).and_return("rendered part")
         helper.part_diff(diff)
       end
       
-      it "should render the 'part' partial when part is deleted" do
+      it "should render the 'part_nodiff' partial when part is deleted" do
         diff = [{"name" => "body", "content" => "", "filter_id" => ""},nil]
-        helper.should_receive(:render).with(hash_including(:partial => 'part', :locals => {:part => diff.first})).and_return("rendered part")
+        helper.should_receive(:render).with(hash_including(:partial => 'admin/versions/part_nodiff.html.haml', :locals => {:part => diff.first})).and_return("rendered part")
         helper.part_diff(diff)
       end
     end

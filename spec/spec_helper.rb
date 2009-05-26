@@ -11,7 +11,6 @@ unless defined? RADIANT_ROOT
 end
 require "#{RADIANT_ROOT}/spec/spec_helper"
 require File.expand_path(File.dirname(__FILE__) + "/chronicle_spec_helpers")
-include ChronicleSpecHelpers
 
 require 'webrat'
 
@@ -37,6 +36,6 @@ Spec::Runner.configure do |config|
   #
   # If you declare global fixtures, be aware that they will be declared
   # for all of your examples, even those that don't use them.
-  
+  config.include ChronicleSpecHelpers
   config.include Webrat::Matchers, :type => [:helper, :views]
 end

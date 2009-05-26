@@ -6,8 +6,12 @@ module Chronicle::VersionExtensions
     if reload || @instance.nil?
       attributes = YAML::load( self.yaml )
       associations = (attributes.keys - versionable.class.column_names).map {|k| [k,attributes[k]] }
-      
-      instance_class = attributes[:class_name] ? attributes[:class_name].constantize : Page
+      instance_class = case versionable_type
+      when "Page"
+         attributes[:class_name] ? attributes[:class_name].constantize : Page
+      else
+        versionable_type.constantize
+      end
       obj = instance_class.send(:instantiate, attributes)
       associations.each do |var_name,var_value|
         obj.__send__( "#{var_name}=", var_value )

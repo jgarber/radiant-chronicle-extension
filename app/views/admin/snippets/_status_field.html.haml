@@ -1,0 +1,3 @@
+%p
+  %label{:for => "snippet_status_id"} Status
+  = select :snippet, :status_id, Status.find_all.map { |s| [s.name, s.id] }, {}

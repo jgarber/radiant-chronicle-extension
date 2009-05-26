@@ -11,6 +11,9 @@
     - @versions.each do |version|
       %tr
         %td= link_to "Version #{version.number}", admin_version_path(version)
-        %td= link_to version.instance.title, edit_admin_page_path(version.instance)
+        %td
+          = version.versionable_type
+          &mdash;
+          = link_to version.instance.title, polymorphic_path([:edit, :admin, version.instance.becomes(version.instance.class.base_class)])
         %td= version.instance.updated_by ? version.instance.updated_by.name : ""
         %td= version.created_at

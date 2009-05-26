@@ -30,13 +30,13 @@ module Chronicle::SimpleModelExtensions
   
   # The most recent version of the page, possibly ahead of the live version
   def current
-    self.versioned? ? self.versions.current.model : self
+    self.versioned? ? self.versions.current.instance : self
   end
   alias_method :current_dev, :current
 
   # The most recent live version of the page
   def current_live
-    self.versioned? ? self.versions.current_live.model : self
+    self.versioned? ? self.versions.current_live.instance : self
   end
   
   def versions_with_limit(limit)
@@ -49,5 +49,9 @@ module Chronicle::SimpleModelExtensions
   
   def status=(value)
     self.status_id = value.id
+  end
+  
+  def title
+    name
   end
 end

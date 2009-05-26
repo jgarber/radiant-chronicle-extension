@@ -1,0 +1,26 @@
+#diff.form-area
+  .row
+    %p
+      %label Name:
+      %span= field_diff(version, :name)
+  %div{:style => "clear:both"}
+  %h3 Content:
+  #pages
+    .page{:style => "padding-top:0"}
+      - if version.previous
+        %pre= diff(h(version.previous.instance.content), h(version.instance.content))
+      - else
+        %pre= h(version.instance.content)
+  .row
+    %p
+      %label Filter:
+      %span
+        - if version.previous
+          = format_diff(version.previous.instance.filter_id, version.instance.filter_id)
+        - else
+          = h(version.instance.filter_id)
+    %p
+      %label Status:
+      %span= status_diff(version)
+  %div{:style => "clear:both"}
+  %p= updated_stamp(version.instance)

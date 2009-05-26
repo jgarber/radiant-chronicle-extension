@@ -35,10 +35,12 @@ class ChronicleExtension < Radiant::Extension
 
     admin.snippet.edit.add :main, "admin/timeline", :before => "edit_header"
     admin.snippet.edit.add :main, 'admin/version_diff_popup'
+    admin.snippet.edit.add :form, 'status_field', :before => 'edit_timestamp'
     # Unfortunately, the iteration local is not passed into the render_region call,
     # so we have to override the whole template.
     admin.snippet.index.add :tbody, 'status_cell', :before => "modify_cell"
-
+    admin.snippet.index.add :thead, 'status_header', :before => "modify_header"
+    
     admin.tabs.add "History", "/admin/versions/", :visibility => [:all]
   end
 
