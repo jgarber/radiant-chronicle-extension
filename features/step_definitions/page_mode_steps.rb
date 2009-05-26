@@ -12,7 +12,8 @@ Given /^I am looking at a timeline that has a dev-and-live marker$/ do
   @page.save
   @page.reload
   visit admin_version_path(@page.versions.current)
-  response.should have_selector("a img#dev-and-live-marker")end
+  response.should have_selector("a img#dev-and-live-marker")
+end
 
 When /^I click the (dev|live|dev-and-live) marker$/ do |type|
   click_link "#{type}-marker"

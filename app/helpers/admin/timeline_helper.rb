@@ -15,7 +15,7 @@ module Admin::TimelineHelper
   def marker(type)
     type = type.to_s
     image_tag = image_tag("/images/admin/#{type}.png", :class=>"marker", :id=>"#{type}-marker")
-    if model.is_a?(Page)
+    if version_model.is_a?(Page)
       case type
       when "live"
         link_to(image_tag, live_page_url(@page))
@@ -65,7 +65,7 @@ module Admin::TimelineHelper
   end
   
   def versions_for_timeline
-    @versions_for_timeline ||= model.versions_with_limit(MAX_VERSIONS_VISIBLE_IN_TIMELINE)
+    @versions_for_timeline ||= version_model.versions_with_limit(MAX_VERSIONS_VISIBLE_IN_TIMELINE)
   end
   
   def version_class(index)
@@ -76,4 +76,7 @@ module Admin::TimelineHelper
     end
   end
   
+  def version_model
+    (@version && @version.instance) || model
+  end
 end
