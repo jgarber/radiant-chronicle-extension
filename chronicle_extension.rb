@@ -21,6 +21,7 @@ class ChronicleExtension < Radiant::Extension
     Page.class_eval { include Chronicle::PageExtensions }
     PagePart.class_eval { include Chronicle::PagePartExtensions }
     Snippet.class_eval { include Chronicle::SimpleModelExtensions }
+    Layout.class_eval { include Chronicle::SimpleModelExtensions }
     
     Admin::ResourceController.class_eval { include Chronicle::ResourceControllerExtensions }
     Admin::PagesController.class_eval { include Chronicle::Interface }
