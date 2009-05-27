@@ -18,15 +18,19 @@ class ChronicleExtension < Radiant::Extension
     require 'chronicle/diff'
     ActiveRecord::Base::VersionsProxyMethods.class_eval { include Chronicle::VersionsProxyMethods }
     Version.class_eval { include Chronicle::VersionExtensions }
-    Page.class_eval { include Chronicle::PageExtensions }
+    Page.class_eval do 
+      include Chronicle::PageExtensions
+      include Chronicle::Tags
+    end
     PagePart.class_eval { include Chronicle::PagePartExtensions }
     Snippet.class_eval { include Chronicle::SimpleModelExtensions }
     Layout.class_eval { include Chronicle::SimpleModelExtensions }
-    
+
     Admin::ResourceController.class_eval { include Chronicle::ResourceControllerExtensions }
     Admin::PagesController.class_eval { include Chronicle::Interface }
     Admin::PagesController.class_eval { include Chronicle::PagesControllerExtensions }
     Admin::SnippetsController.class_eval { include Chronicle::Interface }
+    Admin::LayoutsController.class_eval { include Chronicle::Interface }
 
     admin.page.edit.add :main, "admin/timeline", :before => "edit_header"
     admin.page.edit.add :main, 'admin/version_diff_popup'
@@ -37,11 +41,15 @@ class ChronicleExtension < Radiant::Extension
     admin.snippet.edit.add :main, "admin/timeline", :before => "edit_header"
     admin.snippet.edit.add :main, 'admin/version_diff_popup'
     admin.snippet.edit.add :form, 'status_field', :before => 'edit_timestamp'
-    # Unfortunately, the iteration local is not passed into the render_region call,
-    # so we have to override the whole template.
     admin.snippet.index.add :tbody, 'status_cell', :before => "modify_cell"
     admin.snippet.index.add :thead, 'status_header', :before => "modify_header"
-    
+
+    admin.layout.edit.add :main, "admin/timeline", :before => "edit_header"
+    admin.layout.edit.add :main, 'admin/version_diff_popup'
+    admin.layout.edit.add :form, 'status_field', :before => 'edit_timestamp'
+    admin.layout.index.add :tbody, 'status_cell', :before => "modify_cell"
+    admin.layout.index.add :thead, 'status_header', :before => "modify_header"
+
     admin.tabs.add "History", "/admin/versions/", :visibility => [:all]
   end
 

@@ -1,0 +1,3 @@
+%p
+  %label{:for => "layout_status_id"} Status
+  = select :layout, :status_id, Status.find_all.map { |s| [s.name, s.id] }, {}

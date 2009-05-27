@@ -7,6 +7,7 @@ module Chronicle::PageExtensions
       alias_method_chain :find_by_url, :draft_versioning
       alias_method_chain :simply_versioned_create_version, :extra_version_attributes
       alias_method_chain :url, :draft_awareness
+      alias_method_chain :render, :draft_layouts
       
       # Switch callback chain order so page parts are saved to the version
       create_version_callback = @after_save_callbacks.detect {|c| c.method == :simply_versioned_create_version }
@@ -100,6 +101,18 @@ module Chronicle::PageExtensions
       parent.current.child_url(self)
     else
       url_without_draft_awareness
+    end
+  end
+  
+  def render_with_draft_layouts
+    if layout
+      if layout.versioned? && dev?(request)
+        parse_object(layout.current)
+      else
+        parse_object(layout)
+      end
+    else
+      render_part(:body)
     end
   end
   
