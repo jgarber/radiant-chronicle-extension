@@ -19,7 +19,7 @@ module Chronicle::Tags
     if name = tag.attr['name']
       snippet = if dev?(request)
         s = Snippet.find_by_name(name.strip)
-        s.versioned? ? s.current : s
+        (s && s.versioned?) ? s.current : s
       else
         Snippet.find_by_name_and_status_id(name.strip, Status[:published].id)
       end

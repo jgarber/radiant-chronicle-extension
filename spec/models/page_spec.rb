@@ -376,6 +376,10 @@ describe Page do
       snippet = Snippet.create(:name => "foo", :content => "bar", :status_id => Status[:draft].id)
       @page.should render("<r:snippet name='foo' />").with_error('snippet not found')
     end
+
+    it "should not render nonexistent snippet in dev mode" do
+      @page.should render("<r:snippet name='doesnotexist' />").on("dev.example.com").with_error('snippet not found')
+    end
   end
 
   describe "layouts dev mode" do
