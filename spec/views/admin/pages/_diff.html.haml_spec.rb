@@ -31,6 +31,51 @@ describe "/admin/pages/_diff.html.haml" do
     response.should have_selector("span.to", :content => "published-2")
   end
   
+  it "should have a changed breadcrumb" do
+    page = pages(:published)
+    page.update_attributes(:breadcrumb => "Published page")
+    @version = page.versions.current
+    render 'admin/pages/_diff.html.haml', :locals => {:version => @version}
+    response.should have_selector("span.from", :content => "")
+    response.should have_selector("span.to", :content => "Published page")
+  end
+
+  it "should have a changed description" do
+    page = pages(:published)
+    page.update_attributes(:description => "the description")
+    @version = page.versions.current
+    render 'admin/pages/_diff.html.haml', :locals => {:version => @version}
+    response.should have_selector("span.from", :content => "")
+    response.should have_selector("span.to", :content => "the description")
+  end
+  
+  it "should not show description when empty and no change" do
+    page = pages(:published)
+    page.description.should be_blank
+    page.save! # new version
+    @version = page.versions.current
+    render 'admin/pages/_diff.html.haml', :locals => {:version => @version}
+    response.should_not contain("Description")
+  end
+  
+  it "should have a changed keywords" do
+    page = pages(:published)
+    page.update_attributes(:keywords => "the keywords")
+    @version = page.versions.current
+    render 'admin/pages/_diff.html.haml', :locals => {:version => @version}
+    response.should have_selector("span.from", :content => "")
+    response.should have_selector("span.to", :content => "the keywords")
+  end
+  
+  it "should not show keywords when empty and no change" do
+    page = pages(:published)
+    page.keywords.should be_blank
+    page.save! # new version
+    @version = page.versions.current
+    render 'admin/pages/_diff.html.haml', :locals => {:version => @version}
+    response.should_not contain("Keywords")
+  end
+  
   it "should show the parts' diffs" do
     page = pages(:published)
     page.parts = [{"name"=>"body", "filter_id"=>"", "content"=>"Changed body"}]

@@ -5,10 +5,20 @@
       %tr
         %th{:class=>"label"} Page Title:
         %td{:class=>"field"}= field_diff(version, :title)
-      - if version.diff[:slug]
+      %tr
+        %th{:class=>"label"} Slug:
+        %td{:class=>"field"}= field_diff(version, :slug)
+      %tr
+        %th{:class=>"label"} Breadcrumb:
+        %td{:class=>"field"}= field_diff(version, :breadcrumb)
+      - if version.diff[:description] || !version.instance.send(:description).blank?
         %tr
-          %th{:class=>"label"} Slug:
-          %td{:class=>"field"}= field_diff(version, :slug)
+          %th{:class=>"label"} Description:
+          %td{:class=>"field"}= field_diff(version, :description)
+      - if version.diff[:keywords] || !version.instance.send(:keywords).blank?
+        %tr
+          %th{:class=>"label"} Keywords:
+          %td{:class=>"field"}= field_diff(version, :keywords)
   %h3 Page Parts:
   #pages
     - version.diff[:parts].each do |part|
