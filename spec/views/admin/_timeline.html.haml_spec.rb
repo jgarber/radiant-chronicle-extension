@@ -20,31 +20,37 @@ describe "/admin/_timeline.html.haml" do
         li.should have_marker(:this)
       end
     end
+    
+    it "should attach the javascript help balloons" do
+      response.should_not contain("attach_help_balloon")
+    end
   end
   
   describe "when used in the context of a version" do
     before(:each) do
       assigns[:version] = pages(:draft).versions.current
       assigns[:page] = pages(:draft)
+      render 'admin/_timeline.html.haml'
     end
 
     it "should have a chevron on the version I am currently viewing" do
-      render 'admin/_timeline.html.haml'
       response.should have_selector("li", :id=>"version-1") do |li|
         li.should have_marker(:this)
       end
     end
     
     it "should not have a working version node" do
-      render 'admin/_timeline.html.haml'
       response.should_not have_selector("li", :id=>"working-version")
     end
     
     it "should have links to other versions" do
-      render 'admin/_timeline.html.haml'
       response.should have_selector("li", :id=>"version-1") do |li|
         li.should have_selector("a", :href => "/admin/versions/#{assigns[:version].id}")
       end
+    end
+    
+    it "should not attach javascript help balloons" do
+      response.should_not contain("attach_help_balloon")
     end
   end
   

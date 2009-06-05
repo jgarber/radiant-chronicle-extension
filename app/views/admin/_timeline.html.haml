@@ -4,6 +4,6 @@
     - versions_for_timeline.each_with_index do |version, i|
       %li{:id => "version-#{version.number}", :class => version_class(i)}
         = version_icon(version)
-        = version_tooltip(version)
+        = version_tooltip(version) unless @version
         = marker_for_version(version)
         = marker(:this) if @version && version.id == @version.id
