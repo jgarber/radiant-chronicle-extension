@@ -360,7 +360,7 @@ describe Page do
         snippet = snippets(:first)
         snippet.save # Create a live version
         snippet.status.should == Status[:published]
-        lambda { snippet.update_attributes(:content => "first", :status_id => Status[:draft].id) }.should change { snippet.versions.size }.by(1)
+        lambda { snippet.update_attributes(:content => "First dev", :status_id => Status[:draft].id) }.should change { snippet.versions.size }.by(1)
       end
 
       it "should render the published snippet in production mode" do
@@ -368,17 +368,41 @@ describe Page do
       end
 
       it "should render the draft snippet in dev mode" do
-        @page.should render("<r:snippet name='first' />").as("first").on("dev.example.com")
+        @page.should render("<r:snippet name='first' />").as("First dev").on("dev.example.com")
       end
-    end
 
-    it "should not render draft snippets in production mode" do
-      snippet = Snippet.create(:name => "foo", :content => "bar", :status_id => Status[:draft].id)
-      @page.should render("<r:snippet name='foo' />").with_error('snippet not found')
-    end
+      it "should not render draft snippets in production mode" do
+        snippet = Snippet.create(:name => "foo", :content => "bar", :status_id => Status[:draft].id)
+        @page.should render("<r:snippet name='foo' />").with_error('snippet not found')
+      end
 
-    it "should not render nonexistent snippet in dev mode" do
-      @page.should render("<r:snippet name='doesnotexist' />").on("dev.example.com").with_error('snippet not found')
+      it "should not render nonexistent snippet in dev mode" do
+        @page.should render("<r:snippet name='doesnotexist' />").on("dev.example.com").with_error('snippet not found')
+      end
+    
+      describe "when snippet title changed in current draft" do
+        before :each do
+          snippet = snippets(:first)
+          snippet.current.update_attributes(:name => "firstly", :status_id => Status[:draft].id)
+          snippet.current.name.should == "firstly"
+        end
+      
+        it "should render snippet with draft name in dev mode" do
+          @page.should render("<r:snippet name='firstly' />").on("dev.example.com").as("First dev")
+        end
+      
+        it "should not render snippet with original name in dev mode" do
+          @page.should render("<r:snippet name='first' />").on("dev.example.com").with_error('snippet not found')
+        end
+      
+        it "should not render snippet with draft name in live mode" do
+          @page.should render("<r:snippet name='firstly' />").with_error('snippet not found')
+        end
+      
+        it "should render snippet with original name in live mode" do
+          @page.should render("<r:snippet name='first' />").as("test")
+        end
+      end
     end
   end
 

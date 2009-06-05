@@ -18,7 +18,13 @@ module Chronicle::Tags
   tag 'snippet' do |tag|
     if name = tag.attr['name']
       snippet = if dev?(request)
+        # fastest way to find dev snippet is to find live one and then adjust for changed name
         s = Snippet.find_by_name(name.strip)
+        if s.nil? # fallback for not found: try to find by current name
+          s = Snippet.find(:all).map {|s| s.current }.find {|s| s.name == name }
+        else # revoke find if found but name changed in current
+          s = nil if s.name != s.current.name
+        end
         (s && s.versioned?) ? s.current : s
       else
         Snippet.find_by_name_and_status_id(name.strip, Status[:published].id)
