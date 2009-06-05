@@ -9,7 +9,7 @@
       %label Content type:
       %span
         - if version.previous
-          = format_diff(version.previous.instance.content_type, version.instance.content_type)
+          = field_diff(version, :content_type)
         - else
           = h(version.instance.content_type)
   %div{:style => "clear:both"}

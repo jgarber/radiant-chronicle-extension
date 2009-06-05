@@ -10,6 +10,10 @@ describe Admin::VersionsHelper do
     it "should format a diff array with one element" do
       helper.format_diff(["Foo"]).should == "Foo"
     end
+    
+    it "should format a diff array with two identical elements as if one" do
+      helper.format_diff(["Foo", "Foo"]).should == "Foo"
+    end
   end
   
   describe "#field_diff" do
