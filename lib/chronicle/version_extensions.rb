@@ -43,7 +43,7 @@ module Chronicle::VersionExtensions
     if previous
       previous.instance.diff(self.instance)
     else
-      self.instance.diff
+      self.instance.diff(self.instance)
     end
   end
 end

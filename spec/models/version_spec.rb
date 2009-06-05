@@ -86,6 +86,14 @@ describe Version do
       version.diff.is_a?(Hash)
     end
     
+    it "should not show a change on first version when it differs from current version" do
+      page = pages(:published)
+      page.title = "Changed"
+      page.save
+      version = page.versions.first
+      version.diff.should_not include(:title)
+    end
+    
     it "should include a title change" do
       page = pages(:published)
       page.title = "Changed"
