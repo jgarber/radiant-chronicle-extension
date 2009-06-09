@@ -58,14 +58,20 @@ Someday/maybe:
 * Git interface
 
 == Installation
- 
+
+  ./script/extension install chronicle
+
+-OR-
+
 (from the radiant application root)
   
   git clone git://github.com/jgarber/radiant-chronicle-extension.git vendor/extensions/chronicle
+  cd vendor/extensions/chronicle
   git submodule init
   git submodule update
-  rake RAILS_ENV=production db:migrate:extensions
-  rake RAILS_ENV=production radiant:update
+  cd ../../..
+  rake RAILS_ENV=production radiant:extensions:chronicle:migrate
+  rake RAILS_ENV=production radiant:extensions:chronicle:update
   
 == Acknowledgements
 
