@@ -2,17 +2,18 @@ module Chronicle::PageExtensions
   def self.included(base)
     base.class_eval do
       simply_versioned
+      alias_method_chain :update, :parts_draft_versioning
       alias_method_chain :update_without_callbacks, :draft_versioning
-      alias_method_chain :save_page_parts, :draft_versioning
+      # alias_method_chain :parts_attributes=, :draft_versioning
       alias_method_chain :find_by_url, :draft_versioning
       alias_method_chain :simply_versioned_create_version, :extra_version_attributes
       alias_method_chain :url, :draft_awareness
       alias_method_chain :render, :draft_layouts
       
-      # Switch callback chain order so page parts are saved to the version
-      create_version_callback = @after_save_callbacks.detect {|c| c.method == :simply_versioned_create_version }
-      @after_save_callbacks.delete(create_version_callback)
-      @after_save_callbacks.unshift(create_version_callback)
+      # # Switch callback chain order so page parts are saved to the version
+      # create_version_callback = @after_save_callbacks.detect {|c| c.method == :simply_versioned_create_version }
+      # @after_save_callbacks.delete(create_version_callback)
+      # @after_save_callbacks.unshift(create_version_callback)
     end
     
     base.send :include, ActiveRecord::Diff
@@ -20,24 +21,37 @@ module Chronicle::PageExtensions
     base.send(:diff, {:include => [:layout_id, :class_name, :status_id]})
   end
   
+  def update_with_parts_draft_versioning
+    if self.status_id < Status[:published].id # Draft or Reviewed
+      self.class.reflect_on_association(:parts).options[:autosave] = false
+      begin
+        update_result = update_without_parts_draft_versioning
+      ensure
+        self.class.reflect_on_association(:parts).options[:autosave] = true
+      end
+      update_result # Don't save page; versioning callbacks will save it in the versions table
+    else
+      update_without_parts_draft_versioning
+    end
+  end
+  
   def update_without_callbacks_with_draft_versioning
     if self.status_id < Status[:published].id # Draft or Reviewed
-      update_with_lock([self.class.locking_column]) # Only update the locking column, not other attributes
-      true # Don't save page; versioning callbacks will save it in the versions table
+      update_result = update_with_lock([self.class.locking_column]) # Only update the locking column, not other attributes
+      update_result # Don't save page; versioning callbacks will save it in the versions table
     else
       update_without_callbacks_without_draft_versioning
     end
   end
-  
-  def save_page_parts_with_draft_versioning
-    if self.status_id < Status[:published].id # Draft or Reviewed
-      # Don't save parts to the live page; callbacks will add them to the versioned page
-      @page_parts = nil
-      true
-    else
-      save_page_parts_without_draft_versioning
-    end
-  end
+  # 
+  # def parts_attributes_with_draft_versioning=(attributes)
+  #   if self.status_id < Status[:published].id # Draft or Reviewed
+  #     # Don't save parts to the live page; callbacks will add them to the versioned page
+  #     attributes
+  #   else
+  #     parts_attributes_without_draft_versioning=(attributes)
+  #   end
+  # end
   
   def simply_versioned_create_version_with_extra_version_attributes
     with_associated_parts_in_attributes do
@@ -118,7 +132,8 @@ module Chronicle::PageExtensions
   
   def with_associated_parts_in_attributes(&block)
     real_attributes = self.attributes
-    write_attribute "parts", self.parts.map {|p| p.attributes }
+#FIXME: REMOVE ATTRIBUTES_CACHE FROM PARTS?
+    write_attribute "parts", self.parts
     block.call
     self.attributes = real_attributes if self.status_id < Status[:published].id
   end

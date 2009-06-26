@@ -13,9 +13,14 @@ module Chronicle::VersionExtensions
         versionable_type.constantize
       end
       obj = instance_class.send(:instantiate, attributes)
-      associations.each do |var_name,var_value|
-        obj.__send__( "#{var_name}=", var_value )
+#TODO: Make a VersionedAssociationCollection that handles find_by_name?  Or just define another method, #part(name), that always does an Array#find.
+      associations.each do |assoc_name,assoc_value|
+        obj.instance_variable_set "@#{assoc_name}", assoc_value
+        (class << obj; self; end).send(:define_method, assoc_name) do
+          instance_variable_get "@#{assoc_name}"
+        end
       end
+      obj.parts
       @instance = obj
     end
     @instance

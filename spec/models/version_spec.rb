@@ -114,7 +114,7 @@ describe Version do
     
     it "should include a part that stays the same" do
       page = pages(:published)
-      page.parts = [{"name"=>"body", "filter_id"=>"", "content"=>"Published body."}]
+      page.parts_attributes = [page.parts.first.attributes]
       page.save
       version = page.versions.current
       version.diff.should include(:parts)
@@ -123,7 +123,7 @@ describe Version do
     
     it "should include a part addition" do
       page = pages(:published)
-      page.parts = [{"name"=>"body", "filter_id"=>"", "content"=>"Published body."}, {"name"=>"added", "filter_id"=>"", "content"=>"I added this part"}]
+      page.parts_attributes = [page.parts.first.attributes, {"name"=>"added", "filter_id"=>"", "content"=>"I added this part"}]
       page.save
       version = page.versions.current
       version.diff.should include(:parts)
@@ -132,7 +132,7 @@ describe Version do
     
     it "should have its part stay the same when looking at the first version of a page that changed" do
       page = pages(:published)
-      page.parts = [{"name"=>"body", "filter_id"=>"", "content"=>"Changed body"}]
+      page.parts_attributes = [page.parts.first.attributes.merge("content" => "Changed body.")]
       page.save
       version = page.versions.first
       version.diff.should include(:parts)
@@ -141,7 +141,7 @@ describe Version do
     
     it "should include a part change" do
       page = pages(:published)
-      page.parts = [{"name"=>"body", "filter_id"=>"", "content"=>"Changed body"}]
+      page.parts_attributes = [page.parts.first.attributes.merge("content" => "Changed body.")]
       page.save
       version = page.versions.current
       version.diff.should include(:parts)
@@ -150,7 +150,7 @@ describe Version do
     
     it "should include a part deletion" do
       page = pages(:published)
-      page.parts = [{"name"=>"added", "filter_id"=>"", "content"=>"I added this part"}]
+      page.parts_attributes = [page.parts.first.attributes.merge("_delete" => "true")]
       page.save
       version = page.versions.current
       version.diff.should include(:parts)
