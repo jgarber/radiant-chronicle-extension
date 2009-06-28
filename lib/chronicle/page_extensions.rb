@@ -4,21 +4,25 @@ module Chronicle::PageExtensions
       simply_versioned
       alias_method_chain :update, :parts_draft_versioning
       alias_method_chain :update_without_callbacks, :draft_versioning
-      # alias_method_chain :parts_attributes=, :draft_versioning
+      alias_method_chain :part, :versioned_association
       alias_method_chain :find_by_url, :draft_versioning
       alias_method_chain :simply_versioned_create_version, :extra_version_attributes
       alias_method_chain :url, :draft_awareness
       alias_method_chain :render, :draft_layouts
-      
-      # # Switch callback chain order so page parts are saved to the version
-      # create_version_callback = @after_save_callbacks.detect {|c| c.method == :simply_versioned_create_version }
-      # @after_save_callbacks.delete(create_version_callback)
-      # @after_save_callbacks.unshift(create_version_callback)
     end
     
     base.send :include, ActiveRecord::Diff
     base.send :alias_method_chain, :diff, :page_associations
     base.send(:diff, {:include => [:layout_id, :class_name, :status_id]})
+  end
+  
+  
+  def part_with_versioned_association(name)
+    if parts.respond_to?(:loaded?) #parts is an AssociationCollection
+      part_without_versioned_association(name)
+    else #parts is a simple array, loaded from YAML
+      parts.find {|p| p.name == name.to_s }
+    end
   end
   
   def update_with_parts_draft_versioning
@@ -43,15 +47,6 @@ module Chronicle::PageExtensions
       update_without_callbacks_without_draft_versioning
     end
   end
-  # 
-  # def parts_attributes_with_draft_versioning=(attributes)
-  #   if self.status_id < Status[:published].id # Draft or Reviewed
-  #     # Don't save parts to the live page; callbacks will add them to the versioned page
-  #     attributes
-  #   else
-  #     parts_attributes_without_draft_versioning=(attributes)
-  #   end
-  # end
   
   def simply_versioned_create_version_with_extra_version_attributes
     with_associated_parts_in_attributes do
@@ -62,7 +57,7 @@ module Chronicle::PageExtensions
   end
   
   # Works the same as #find_by_url when in live mode, but in dev mode, finds
-  # the URL using the most current versions (which may be draft versions ahead
+  # the URL using the most current version (which may be draft versions ahead
   # of the live version)
   def find_by_url_with_draft_versioning(url, live = true, clean = true)
     if live
@@ -132,8 +127,7 @@ module Chronicle::PageExtensions
   
   def with_associated_parts_in_attributes(&block)
     real_attributes = self.attributes
-#FIXME: REMOVE ATTRIBUTES_CACHE FROM PARTS?
-    write_attribute "parts", self.parts
+    write_attribute "parts", self.parts.reject {|part| part.marked_for_destruction? }
     block.call
     self.attributes = real_attributes if self.status_id < Status[:published].id
   end

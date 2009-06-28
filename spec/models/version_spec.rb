@@ -145,13 +145,16 @@ describe Version do
       page.save
       version = page.versions.current
       version.diff.should include(:parts)
-      version.diff[:parts].should == [[{"name"=>"body", "filter_id"=>"", "content"=>"Published body."}, {"name"=>"body", "filter_id"=>"", "content"=>"Changed body"}]]
+      version.diff[:parts].should == [[{"name"=>"body", "filter_id"=>"", "content"=>"Published body."}, {"name"=>"body", "filter_id"=>"", "content"=>"Changed body."}]]
     end
     
     it "should include a part deletion" do
       page = pages(:published)
-      page.parts_attributes = [page.parts.first.attributes.merge("_delete" => "true")]
+      page.parts_attributes = [page.parts.first.attributes.merge("_delete" => "1")]
+      page.parts.first.instance_variable_get("@marked_for_destruction").should == true
       page.save
+      page.reload
+      page.parts.should be_empty
       version = page.versions.current
       version.diff.should include(:parts)
       version.diff[:parts].should include([{"name"=>"body", "filter_id"=>"", "content"=>"Published body."},nil])
