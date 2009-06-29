@@ -78,11 +78,12 @@ describe "/admin/pages/_diff.html.haml" do
   
   it "should show the parts' diffs" do
     page = pages(:published)
-    page.parts = [{"name"=>"body", "filter_id"=>"", "content"=>"Changed body"}]
+    expected_content = "Changed body"
+    page.parts_attributes = [page.parts.first.attributes.merge("content" => expected_content)]
     page.save
     @version = page.versions.current
     render 'admin/pages/_diff.html.haml', :locals => {:version => @version}
-    response.should have_selector("div.page", :content => "Changed body")
+    response.should have_selector("div.page", :content => expected_content)
   end
   
   it "should have a changed layout" do

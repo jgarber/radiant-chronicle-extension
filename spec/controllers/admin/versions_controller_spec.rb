@@ -31,7 +31,7 @@ describe Admin::VersionsController do
   
   describe "GET 'diff'" do
     it " should be successful" do
-      get 'diff', :id => pages(:published).versions.first.id
+      get 'diff', :id => pages(:published).versions.first.id, :format => :js
       response.should be_success
       response.layout.should be_nil
     end
