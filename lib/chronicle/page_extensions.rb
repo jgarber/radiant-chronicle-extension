@@ -18,11 +18,7 @@ module Chronicle::PageExtensions
   
   
   def part_with_versioned_association(name)
-    if parts.respond_to?(:loaded?) #parts is an AssociationCollection
-      part_without_versioned_association(name)
-    else #parts is a simple array, loaded from YAML
-      parts.find {|p| p.name == name.to_s }
-    end
+    parts.to_a.find {|p| p.name == name.to_s }
   end
   
   def update_with_parts_draft_versioning

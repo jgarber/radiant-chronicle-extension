@@ -13,9 +13,23 @@ describe Version do
     version.should be_only_visible_in_dev_mode
   end
   
-  it "should respond to #instance" do
-    version = pages(:page_with_draft).versions.current
-    version.instance.should be_a(Page)
+  describe "#instance" do
+    it "should return an instance of the versionable object" do
+      version = pages(:page_with_draft).versions.current
+      version.instance.should be_a(Page)
+    end
+    
+    it "should instantiate associations from the version" do
+      expected_content = "I changed the body"
+      page = pages(:draft)
+      page.parts_attributes = [page.parts.first.attributes.merge("content" => expected_content)]
+      page.save
+      current_version = page.versions.current
+      current_version.yaml.should =~ Regexp.new(expected_content)
+      
+      instance = current_version.instance
+      instance.parts.first.content.should == expected_content
+    end
   end
   
   it "should instantiate a draft of a different class_name" do

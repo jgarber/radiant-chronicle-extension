@@ -14,12 +14,8 @@ module Chronicle::VersionExtensions
       end
       obj = instance_class.send(:instantiate, attributes)
       associations.each do |assoc_name,assoc_value|
-        obj.instance_variable_set "@#{assoc_name}", assoc_value
-        (class << obj; self; end).send(:define_method, assoc_name) do
-          instance_variable_get "@#{assoc_name}"
-        end
+        obj.send(assoc_name).target= assoc_value
       end
-      obj.parts
       @instance = obj
     end
     @instance
