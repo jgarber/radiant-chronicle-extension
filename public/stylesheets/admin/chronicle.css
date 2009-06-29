@@ -125,7 +125,8 @@ td.status span.status.reviewed-status {
 }
 /*** Popup diff ***/
 #version-diff {
-  overflow: auto;
+  overflow-y: auto;
+  overflow-x: hidden;
   max-height: 500px;
 }
 #version-diff-popup p {
