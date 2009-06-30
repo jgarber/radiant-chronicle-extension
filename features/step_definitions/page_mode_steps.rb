@@ -7,15 +7,13 @@ Given /^I am looking at a timeline that has a (dev|live) marker$/ do |type|
 end
 
 Given /^I am looking at a timeline that has a dev-and-live marker$/ do
-  @page = pages(:first)
-  @page.status.should == Status[:published]
-  @page.save
-  @page.reload
+  Given "I have a published page"
   visit admin_version_path(@page.versions.current)
   response.should have_selector("a img#dev-and-live-marker")
 end
 
 When /^I click the (dev|live|dev-and-live) marker$/ do |type|
+  Radiant::Cache.clear
   click_link "#{type}-marker"
 end
 
