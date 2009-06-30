@@ -20,25 +20,44 @@ end
 require 'rake'
 require 'rake/rdoctask'
 require 'rake/testtask'
+require 'active_support'
 
 rspec_base = File.expand_path(RADIANT_ROOT + '/vendor/plugins/rspec/lib')
 $LOAD_PATH.unshift(rspec_base) if File.exist?(rspec_base)
 require 'spec/rake/spectask'
 # require 'spec/translator'
 
+$:.unshift(RAILS_ROOT + '/vendor/plugins/cucumber/lib')
+require 'cucumber/rake/task'
+
 # Cleanup the RADIANT_ROOT constant so specs will load the environment
 Object.send(:remove_const, :RADIANT_ROOT)
 
 extension_root = File.expand_path(File.dirname(__FILE__))
 
-task :default => [:spec, :features]
+task :default => :spec
 task :stats => "spec:statsetup"
 
 desc "Run all specs in spec directory"
-Spec::Rake::SpecTask.new(:spec) do |t|
-  t.spec_opts = ['--options', "\"#{extension_root}/spec/spec.opts\""]
-  t.spec_files = FileList['spec/**/*_spec.rb']
+task :spec do
+  errors = %w(spec:integration spec:models spec:controllers spec:views spec:helpers).collect do |task|
+    begin
+      puts %{\nRunning #{task.gsub('spec:', '').titlecase} Spec Task}
+      Rake::Task[task].invoke
+      nil
+    rescue => e
+      task
+    # ensure
+    #   if task == 'spec:integration'
+    #     Rake::Task["db:test:load"].reenable
+    #     Rake::Task["db:schema:load"].reenable
+    #     Rake::Task["db:test:prepare"].execute
+    #   end
+    end
+  end.compact
+  abort "Errors running #{errors.to_sentence}!" if errors.any?
 end
+
 
 namespace :spec do
   desc "Run all specs in spec directory with RCov"
@@ -62,14 +81,10 @@ namespace :spec do
       t.spec_files = FileList["spec/#{sub}/**/*_spec.rb"]
     end
   end
-  
-  # Hopefully no one has written their extensions in pre-0.9 style
-  # desc "Translate specs from pre-0.9 to 0.9 style"
-  # task :translate do
-  #   translator = ::Spec::Translator.new
-  #   dir = RAILS_ROOT + '/spec'
-  #   translator.translate(dir, dir)
-  # end
+
+  Cucumber::Rake::Task.new(:integration) do |t|
+    t.cucumber_opts = "--format progress"
+  end
 
   # Setup specs for stats
   task :statsetup do
@@ -99,11 +114,6 @@ namespace :spec do
   end
 end
 
-require 'cucumber/rake/task'
-Cucumber::Rake::Task.new(:features) do |t|
-  t.cucumber_opts = "--format pretty" # Any valid command line option can go here.
-end
-
 desc 'Generate documentation for the chronicle extension.'
 Rake::RDocTask.new(:rdoc) do |rdoc|
   rdoc.rdoc_dir = 'rdoc'
@@ -111,14 +121,6 @@ Rake::RDocTask.new(:rdoc) do |rdoc|
   rdoc.options << '--line-numbers' << '--inline-source'
   rdoc.rdoc_files.include('README')
   rdoc.rdoc_files.include('lib/**/*.rb')
-end
-
-# For extensions that are in transition
-desc 'Test the chronicle extension.'
-Rake::TestTask.new(:test) do |t|
-  t.libs << 'lib'
-  t.pattern = 'test/**/*_test.rb'
-  t.verbose = true
 end
 
 # Load any custom rakefiles for extension
