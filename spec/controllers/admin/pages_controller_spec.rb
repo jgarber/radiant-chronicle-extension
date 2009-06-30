@@ -60,26 +60,6 @@ describe Admin::PagesController do
       session[:view_after_saving].should_not be_true
     end
     
-    it "should redirect to the page on the same host by default" do
-      pending # Radiant 0.8 now redirect this to the edit action; before it was undefined
-      get :show, :id => @page.id
-      response.should be_redirect
-      response.should redirect_to(@page.url)
-    end
-    
-    it "should redirect to the live page when live mode is specified" do
-      pending # Radiant 0.8 now redirect this to the edit action; before it was undefined
-      get :show, :id => @page.id, :mode => 'live'
-      response.should be_redirect
-      response.should redirect_to("http://test.host" + @page.url)
-    end
-    
-    it "should redirect to the dev page when dev mode is specified" do
-      pending # Radiant 0.8 now redirect this to the edit action; before it was undefined
-      get :show, :id => @page.id, :mode => 'dev'
-      response.should be_redirect
-      response.should redirect_to("http://dev.test.host" + @page.url)
-    end
   end
   
   def params_for_page(page)

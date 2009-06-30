@@ -20,16 +20,5 @@ module Chronicle::PagesControllerExtensions
       session[:view_after_saving] = params[:view_after_saving]
     end
     
-    def show
-      @page = Page.find(params[:id])
-      case params[:mode]
-      when 'live'
-        redirect_to live_page_url(@page)
-      when 'dev'
-        redirect_to dev_page_url(@page)
-      else
-        redirect_to @page.url
-      end
-    end
   end
 end
