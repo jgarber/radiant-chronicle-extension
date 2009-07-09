@@ -5,7 +5,7 @@ module Chronicle::VersionExtensions
   def instance(reload=false)
     if reload || @instance.nil?
       attributes = YAML::load( self.yaml )
-      associations = (attributes.keys - versionable.class.column_names).map {|k| [k,attributes[k]] }
+      associations = (attributes.keys - versionable_type.constantize.column_names).map {|k| [k,attributes[k]] }
       instance_class = case versionable_type
       when "Page"
          attributes[:class_name] ? attributes[:class_name].constantize : Page
