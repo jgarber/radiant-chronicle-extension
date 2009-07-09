@@ -7,6 +7,8 @@ module Chronicle::ResourceControllerExtensions
   
   def load_model_with_current_version
     model = load_model_without_current_version
-    self.model = model.respond_to?(:current) ? model.current : model
+    unless %w(remove destroy).include?(action_name)
+      self.model = model.respond_to?(:current) ? model.current : model
+    end
   end
 end

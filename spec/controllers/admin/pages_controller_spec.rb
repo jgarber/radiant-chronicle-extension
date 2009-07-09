@@ -62,6 +62,29 @@ describe Admin::PagesController do
     
   end
   
+  describe "deleting a page" do
+    integrate_views
+    
+    before :each do
+      @page = pages(:first)
+      @page.update_attributes(:title => "current", :status_id => Status[:draft].id)
+      # suppose the live page's lock_version gets ahead for some reason
+      @page.send(:update_with_lock, [@page.class.locking_column])
+      @page.reload.lock_version.should > @page.current.lock_version
+    end
+    
+    it "should load the live version of the page" do
+      get :remove, :id => @page.id
+      assigns[:page].title.should_not =~ /current/
+    end
+    
+    it "should be destroyed" do
+      delete :destroy, :id => @page.id
+      flash[:notice].should == "The pages were successfully removed from the site."
+    end
+  end
+  
+  
   def params_for_page(page)
     {"slug"=>page.slug, "class_name"=>page.class_name, "title"=>page.title, "breadcrumb"=>page.breadcrumb, "lock_version"=>page.lock_version, "parts_attributes"=>[{"name"=>"body", "filter_id"=>"", "content"=>"test"}], "status_id"=>page.status_id, "layout_id"=>page.layout_id, "parent_id"=>page.parent_id}
   end
