@@ -92,3 +92,16 @@ Then /^I should see that version's diff$/ do
   response.should contain("Version #{@current_version}")
 end
 
+Given /^I have two layouts$/ do
+  Layout.count.should >= 2
+end
+
+When /^I change the draft page's layout$/ do
+  select "UTF8", :from => "Layout"
+end
+
+Then /^the live version should have the different layout$/ do
+  @page.reload.layout.name.should == "UTF8"
+end
+
+
