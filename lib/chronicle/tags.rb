@@ -1,5 +1,10 @@
 module Chronicle::Tags
   include Radiant::Taggable
+  def self.included(base)
+    base.class_eval do
+      alias_method_chain :children_find_options, :draft_versioning
+    end
+  end
 
   desc %{
     Renders the snippet specified in the @name@ attribute within the context of a page.
@@ -38,5 +43,43 @@ module Chronicle::Tags
     else
       raise StandardTags::TagError.new("`snippet' tag must contain `name' attribute")
     end
+  end
+  
+  desc %{
+    Inside this tag all page related tags refer to the page found at the @url@ attribute.
+    @url@s may be relative or absolute paths.
+
+    *Usage:*
+
+    <pre><code><r:find url="value_to_find">...</r:find></code></pre>
+  }
+  tag 'find' do |tag|
+    url = tag.attr['url']
+    raise TagError.new("`find' tag must contain `url' attribute") unless url
+
+    found = Page.find_by_url(absolute_path_for(tag.locals.page.url, url), !dev?(tag.globals.page.request))
+    if page_found?(found)
+      tag.locals.page = found
+      tag.expand
+    end
+  end
+
+  desc %{
+    Page attribute tags inside this tag refer to the parent of the current page.
+
+    *Usage:*
+    
+    <pre><code><r:parent>...</r:parent></code></pre>
+  }
+  tag "parent" do |tag|
+    parent = tag.locals.page.parent.current
+    tag.locals.page = parent
+    tag.expand if parent
+  end
+  
+  def children_find_options_with_draft_versioning(tag)
+    options = children_find_options_without_draft_versioning(tag)
+    options.merge!(:current => true) if dev?(tag.globals.page.request)
+    options
   end
 end

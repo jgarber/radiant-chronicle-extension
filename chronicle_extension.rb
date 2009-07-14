@@ -17,6 +17,7 @@ class ChronicleExtension < Radiant::Extension
   def activate
     require 'chronicle/diff'
     ActiveRecord::Base::VersionsProxyMethods.class_eval { include Chronicle::VersionsProxyMethods }
+    ActiveRecord::Associations::AssociationCollection.class_eval { include Chronicle::AssociationCollectionExtensions }
     Version.class_eval { include Chronicle::VersionExtensions }
     Page.class_eval do 
       include Chronicle::PageExtensions

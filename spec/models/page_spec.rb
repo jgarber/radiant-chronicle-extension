@@ -355,6 +355,30 @@ describe Page do
       @page = pages(:first)
     end
     
+    describe "<r:children:each />" do
+      it "should retrieve current versions of children on the dev host" do
+        @page = pages(:parent)
+        @page.children.first.update_attributes(:slug => "kid", :status => Status[:draft])
+        @page.should render('<r:children:each by="slug"><r:slug /> </r:children:each>').as('kid child-2 child-3 ').on('dev.site.com')
+      end
+    end
+    
+    describe "<r:find />" do
+      it "should retrieve current versions of found pages on the dev host" do
+        @page = pages(:parent)
+        @page.children.first.update_attributes(:slug => "kid", :status => Status[:draft])
+        @page.should render('<r:find url="/parent/kid"><r:slug /></r:find>').as('kid').on('dev.site.com')
+      end
+    end
+    
+    describe "<r:parent />" do
+      it "should use the current version of the parent on the dev host" do
+        @page = pages(:parent)
+        @page.update_attributes(:slug => "parent-draft", :status => Status[:draft])
+        pages(:child).should render('<r:parent><r:slug /></r:parent>').as('parent-draft').on('dev.site.com')
+      end
+    end
+    
     describe "overriding <r:snippet />" do
       before :each do
         snippet = snippets(:first)
