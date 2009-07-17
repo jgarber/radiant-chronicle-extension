@@ -4,7 +4,7 @@
   %thead
     %tr
       %th Version
-      %th Page
+      %th Content
       %th User
       %th Time
   %tbody
@@ -14,6 +14,9 @@
         %td
           = version.versionable_type
           &mdash;
-          = link_to version.instance.title, polymorphic_path([:edit, :admin, version.instance.becomes(version.instance.class.base_class)])
+          - if version.instance.is_a?(Page)
+            = link_to version.instance.title, edit_admin_page_path(version.instance)
+          - else
+            = link_to version.instance.title, polymorphic_path([:edit, :admin, version.instance])
         %td= version.instance.updated_by ? version.instance.updated_by.name : ""
         %td= version.created_at

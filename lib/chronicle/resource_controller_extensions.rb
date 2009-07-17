@@ -8,7 +8,7 @@ module Chronicle::ResourceControllerExtensions
   def load_model_with_current_version
     model = load_model_without_current_version
     unless %w(remove destroy).include?(action_name) ||
-      (action_name == "update" && params["page"]["status_id"].to_i >= Status[:published].id)
+      (action_name == "update" && params["page"] && params["page"]["status_id"].to_i >= Status[:published].id)
         self.model = model.respond_to?(:current) ? model.current : model
     end
   end
