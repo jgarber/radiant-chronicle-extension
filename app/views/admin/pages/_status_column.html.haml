@@ -1,0 +1,6 @@
+- unless simple
+  %td.status{:class => "#{page.status.name.downcase}-status"}
+    = page.status.name
+    - if page.status_id >= Status[:published].id && page.current && page.current.status_id < Status[:published].id
+      %span.status{:class => "#{page.current.status.name.downcase}-status"}
+        = " + " + page.current.status.name
