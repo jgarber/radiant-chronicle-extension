@@ -4,3 +4,6 @@
 [submodule "vendor/plugins/dataset"]
 	path = vendor/plugins/dataset
 	url = git://github.com/jgarber/dataset.git
+[submodule "vendor/plugins/will_paginate"]
+	path = vendor/plugins/will_paginate
+	url = git://github.com/mislav/will_paginate.git

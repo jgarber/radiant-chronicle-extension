@@ -17,3 +17,5 @@
           = link_to version.instance.title, polymorphic_path([:edit, :admin, version.instance.becomes(version.instance.class.base_class)])
         %td= version.instance.updated_by ? version.instance.updated_by.name : ""
         %td= version.created_at
+
+= will_paginate @versions
