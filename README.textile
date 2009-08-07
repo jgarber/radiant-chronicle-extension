@@ -1,0 +1,71 @@
+h1. Chronicle
+
+In an enterprise production environment, it's critical that content editors, designers, and developers be able to edit pages and preview their changes without affecting the live version and that site administrators be able to see who changed what and roll back if necessary.
+
+This extension adds versioning to pages, snippets, and layouts and uses their status to determine its visibility. The most recent published or hidden version is visible in live mode and the most recent version, a.k.a. the "current version," is visible in dev mode regardless of its status. Thus, you can work on a draft in dev mode, preview exactly how it will look, and then make it live when you are ready by changing its status to published.
+
+h2. An example
+
+Look at the revision history of the home page of example.com:
+
+<pre>
+...22  23  24  25
+---*---*---*---@
+           ^   ^
+   Published   Draft
+  (live mode)  (dev mode)
+</pre>
+
+If you went to example.com/ you would see version 24. If you went to dev.example.com/ you would see version 25.
+
+Many people overlook the dev mode feature of Radiant. If you don't know about it, see "How to Setup Dev Mode":http://wiki.radiantcms.org/How_To_Setup_Dev_Mode on the Radiant wiki. You can also set a live.host configuration option if you don't access Radiant admin at the live host.
+
+Some terminology used in the specs:
+* The "current version" is the highest-numbered version, a.k.a. the "current dev" version.
+* The "current live" version is the most recent Published or Hidden page.
+* A page "is a draft" when its status is set to Draft.
+* A page "has a draft" when its current version is a draft.
+* When a page's current version is Published, the page "does not have a draft".
+
+h2. Features:
+
+* Simple graph showing the change history of pages, snippets, and layouts
+* Check a box to view the page in a new window/tab after saving
+* See what changed in a given version
+* Control how many versions are shown in the history by setting Radiant::Config['chronicle.history.per_page']
+* TODO Roll back to a previous version by creating a new one based on it
+* TODO Integration with the Dashboard extension so you can see what has changed recently and what pages have unpublished changes (drafts ahead of published versions)
+* TODO Lines in the change graph showing ancestry when a page is rolled back
+* TODO Versioning including page attachments
+* Should be compatible with (and version the extra page attributes of) most extensions!
+
+Someday/maybe:
+* Git interface
+
+h2. Installation
+
+<pre>
+<code>
+./script/extension install chronicle
+</code>
+</pre>
+
+- OR -
+
+(from the radiant application root)
+
+<pre>
+<code>
+git clone git://github.com/jgarber/radiant-chronicle-extension.git vendor/extensions/chronicle
+cd vendor/extensions/chronicle
+git submodule init
+git submodule update
+cd ../../..
+rake RAILS_ENV=production radiant:extensions:chronicle:migrate
+rake RAILS_ENV=production radiant:extensions:chronicle:update
+</code>
+</pre>
+
+h2. Acknowledgements
+
+Written by Jason Garber for Eastern Mennonite University Thanks to Anton Astashov and Brenton Cheng for the PageVersioning extension, which provided some inspiration for Chronicle
