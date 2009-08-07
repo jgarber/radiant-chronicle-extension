@@ -35,12 +35,12 @@ Object.send(:remove_const, :RADIANT_ROOT)
 
 extension_root = File.expand_path(File.dirname(__FILE__))
 
-task :default => :spec
+task :default => [:features, :spec]
 task :stats => "spec:statsetup"
 
 desc "Run all specs in spec directory"
 task :spec do
-  errors = %w(spec:integration spec:models spec:controllers spec:views spec:helpers).collect do |task|
+  errors = %w(spec:models spec:controllers spec:views spec:helpers).collect do |task|
     begin
       puts %{\nRunning #{task.gsub('spec:', '').titlecase} Spec Task}
       Rake::Task[task].invoke
@@ -58,6 +58,9 @@ task :spec do
   abort "Errors running #{errors.to_sentence}!" if errors.any?
 end
 
+Cucumber::Rake::Task.new(:features) do |t|
+  t.cucumber_opts = "--format progress"
+end
 
 namespace :spec do
   desc "Run all specs in spec directory with RCov"
@@ -80,10 +83,6 @@ namespace :spec do
       t.spec_opts = ['--options', "\"#{extension_root}/spec/spec.opts\""]
       t.spec_files = FileList["spec/#{sub}/**/*_spec.rb"]
     end
-  end
-
-  Cucumber::Rake::Task.new(:integration) do |t|
-    t.cucumber_opts = "--format progress"
   end
 
   # Setup specs for stats
