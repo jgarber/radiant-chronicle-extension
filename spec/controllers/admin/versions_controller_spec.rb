@@ -12,6 +12,32 @@ describe Admin::VersionsController do
       get 'index'
       response.should be_success
     end
+    
+    it "should have some versions" do
+      get 'index'
+      assigns['versions'].should_not be_nil
+    end
+    
+    describe "pagination" do
+      before do
+        @page = pages(:published)
+        100.times do |i|
+          @page.title = i
+          @page.save
+        end
+      end
+      
+      it "should paginate" do
+        get 'index'
+        assigns['versions'].size.should == 30
+      end
+
+      it "should paginate according to config" do
+        Radiant::Config['chronicle.history.per_page'] = 50
+        get 'index'
+        assigns['versions'].size.should == 50
+      end
+    end
   end
 
   describe "GET 'show'" do

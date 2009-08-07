@@ -3,7 +3,8 @@ class Admin::VersionsController < ApplicationController
   before_filter :add_chronicle_stylesheet, :only => [:index, :show, :summary, :diff]
   
   def index
-    @versions = Version.find(:all, :order => "created_at DESC")
+    per_page = Radiant::Config['chronicle.history.per_page']
+    @versions = Version.paginate(:page => params[:page], :order => 'created_at DESC', :per_page => per_page)
   end
 
   def show
