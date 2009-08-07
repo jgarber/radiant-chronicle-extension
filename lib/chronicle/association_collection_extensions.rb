@@ -2,7 +2,9 @@ module Chronicle
   module AssociationCollectionExtensions
     def self.included(base)
       base.class_eval do
-        alias_method_chain :find, :draft_versioning
+        unless method_defined? :find_without_draft_versioning
+          alias_method_chain :find, :draft_versioning
+        end
       end
     end
     
