@@ -17,7 +17,13 @@ module Chronicle::SimpleModelExtensions
   def update_without_callbacks_with_draft_versioning
     if status_id < Status[:published].id # Draft or Reviewed
       update_with_lock([self.class.locking_column]) # Only update the locking column, not other attributes
-      true # Don't save model; versioning callbacks will save it in the versions table
+      if changed == simply_versioned_excluded_columns
+        # Only non-versioned attributes were updated, so it's safe to save
+        update_without_callbacks_without_draft_versioning
+      else
+        true # Don't save model; versioning callbacks will save it in the versions table
+      end
+      
     else
       update_without_callbacks_without_draft_versioning
     end
@@ -26,6 +32,10 @@ module Chronicle::SimpleModelExtensions
   def simply_versioned_create_version_with_extra_version_attributes
     simply_versioned_create_version_without_extra_version_attributes
     self.versions.current.update_attributes(:status_id => status_id)
+  end
+  
+  def nonversioned_attributes
+    attributes.slice(*simply_versioned_excluded_columns)
   end
   
   # The most recent version of the page, possibly ahead of the live version

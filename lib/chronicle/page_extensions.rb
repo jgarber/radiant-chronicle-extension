@@ -1,7 +1,7 @@
 module Chronicle::PageExtensions
   def self.included(base)
     base.class_eval do
-      simply_versioned
+      simply_versioned :exclude => :parent_id
       alias_method_chain :update, :parts_draft_versioning
       alias_method_chain :update_without_callbacks, :draft_versioning
       alias_method_chain :part, :versioned_association
@@ -29,7 +29,13 @@ module Chronicle::PageExtensions
       ensure
         self.class.reflect_on_association(:parts).options[:autosave] = true
       end
-      update_result # Don't save page; versioning callbacks will save it in the versions table
+      if changed == simply_versioned_excluded_columns
+        # Only non-versioned attributes were updated, so it's safe to save
+        update_without_parts_draft_versioning
+      else
+        # Don't save page; versioning callbacks will save it in the versions table
+        update_result
+      end
     else
       update_without_parts_draft_versioning
     end
@@ -37,8 +43,10 @@ module Chronicle::PageExtensions
   
   def update_without_callbacks_with_draft_versioning
     if self.status_id < Status[:published].id # Draft or Reviewed
-      update_result = update_with_lock([self.class.locking_column]) # Only update the locking column, not other attributes
-      update_result # Don't save page; versioning callbacks will save it in the versions table
+      # Only update the locking column and excluded columns, not other attributes.
+      # Versioning callbacks will save the other changes in the versions table.
+      update_result = update_with_lock([self.class.locking_column] + simply_versioned_excluded_columns)
+      update_result
     else
       update_without_callbacks_without_draft_versioning
     end
@@ -50,6 +58,10 @@ module Chronicle::PageExtensions
     end
     
     self.versions.current.update_attributes(:slug => slug, :status_id => status_id)
+  end
+  
+  def nonversioned_attributes
+    attributes.slice(*simply_versioned_excluded_columns)
   end
   
   # Works the same as #find_by_url when in live mode, but in dev mode, finds

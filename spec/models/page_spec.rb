@@ -73,6 +73,15 @@ describe Page do
     @page.reload
     @page.status.should == Status[:draft]
   end
+  
+  it "should allow an immediate move of a draft page" do
+    @page = pages(:draft)
+    @parent = pages(:parent)
+    @page.update_attributes!(:parent_id => @parent.id)
+    @page.reload
+    @page.parent_id.should == @parent.id
+    @page.current.parent_id.should == @parent.id
+  end
 
   describe "drafts" do
     before(:each) do
