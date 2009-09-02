@@ -63,19 +63,6 @@ module Chronicle::Tags
       tag.expand
     end
   end
-
-  desc %{
-    Page attribute tags inside this tag refer to the parent of the current page.
-
-    *Usage:*
-    
-    <pre><code><r:parent>...</r:parent></code></pre>
-  }
-  tag "parent" do |tag|
-    parent = tag.locals.page.parent.current
-    tag.locals.page = parent
-    tag.expand if parent
-  end
   
   def children_find_options_with_draft_versioning(tag)
     options = children_find_options_without_draft_versioning(tag)

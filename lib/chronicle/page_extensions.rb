@@ -8,6 +8,7 @@ module Chronicle::PageExtensions
       alias_method_chain :find_by_url, :draft_versioning
       alias_method_chain :simply_versioned_create_version, :extra_version_attributes
       alias_method_chain :url, :draft_awareness
+      alias_method_chain :parent, :draft_awareness
       alias_method_chain :render, :draft_layouts
     end
     
@@ -15,7 +16,6 @@ module Chronicle::PageExtensions
     base.send :alias_method_chain, :diff, :page_associations
     base.send(:diff, {:include => [:layout_id, :class_name, :status_id]})
   end
-  
   
   def part_with_versioned_association(name)
     parts.to_a.find {|p| p.name == name.to_s }
@@ -119,6 +119,12 @@ module Chronicle::PageExtensions
     else
       url_without_draft_awareness
     end
+  end
+  
+  # Return the current parent if self was a current version
+  def parent_with_draft_awareness
+    parent = parent_without_draft_awareness
+    (parent && dev?(request)) ? parent.current : parent
   end
   
   def render_with_draft_layouts

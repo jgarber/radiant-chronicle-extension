@@ -388,6 +388,29 @@ describe Page do
       end
     end
     
+    describe '<r:content inherit="true" />' do
+      it "should use the current version of the parent's page part on the dev host" do
+        @page = pages(:parent)
+        @page.attributes = {:slug => "parent-draft", :status => Status[:draft]}
+        content = "Draft parent body."
+        @page.parts_attributes = [@page.parts.first.attributes.merge("content" => content)]
+        @page.save
+        @child = pages(:child)
+        @child.parts.destroy_all
+        @child.should render('<r:content inherit="true" />').as("Parent body.")
+        # FIXME: @child doesn't have is_current_version? set.  Maybe set that in tags.locals.page / tags.global.page when in dev mode?  Or change the name to dev_mode? or something.  Or a class variable?
+        @child.should render('<r:content inherit="true" />').as(content).on('dev.site.com')
+      end
+      
+      it "should use current version of a page part on the dev host" do
+        @page = pages(:first)
+        @page.attributes = {:slug => "first-draft", :status => Status[:draft]}
+        content = "First draft test part."
+        @page.parts_attributes = [@page.parts.first.attributes.merge("name" => "test", "content" => content)]
+        @page.should render('<r:content part="test" />').as(content).on('dev.site.com')
+      end
+    end
+    
     describe "overriding <r:snippet />" do
       before :each do
         snippet = snippets(:first)
