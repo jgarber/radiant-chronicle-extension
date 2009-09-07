@@ -43,6 +43,14 @@ Given /^I have a snippet with more than one version$/ do
   @snippet.save # version 2
 end
 
+Given /^I have a layout with more than one version$/ do
+  @layout = layouts(:main)
+  @layout.save # version 1
+  @layout.status = Status[:published]
+  @layout.name = @layout.name += " Version 2"
+  @layout.save # version 2
+end
+
 When /^I edit the page$/ do
   visit admin_pages_path
   click_link @page.title
@@ -66,6 +74,10 @@ When /^I edit a previous snippet version$/ do
   visit edit_admin_snippet_path(:id => @snippet.id, :version => 1)
 end
 
+When /^I edit a previous layout version$/ do
+  visit edit_admin_layout_path(:id => @layout.id, :version => 1)
+end
+
 Then /^I should be taken to the edit page$/ do
   request.params["version"].should == "1"
   request.params["action"].should == "edit"
@@ -77,6 +89,8 @@ Then /^the older (.+) content should be loaded$/ do |model|
     field_labeled("Page Title").value.should_not == @page.current.title
   when "snippet"
     field_labeled("Name").value.should_not == @snippet.current.name
+  when "layout"
+    field_labeled("Name").value.should_not == @layout.current.name
   end
 end
 

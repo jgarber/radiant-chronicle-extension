@@ -26,3 +26,6 @@
       %span= status_diff(version)
   %div{:style => "clear:both"}
   %p= updated_stamp(version.instance)
+  - form_tag(edit_admin_layout_path(:id => version.versionable_id), :method => :get) do
+    = hidden_field_tag(:version, version.number)
+    = submit_tag("Revert to Version #{version.number}", :name => nil)

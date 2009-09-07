@@ -33,3 +33,17 @@ Feature: revert
     When I edit a previous snippet version
     And I press "Save"
     Then I should see "Snippet saved below"
+  
+  Scenario: load previous layout version for editing
+    Given I have a layout with more than one version
+    When I view a previous version
+    And I click the revert button
+    Then I should be taken to the edit page
+    And the older layout content should be loaded
+    And I should see "Loaded version 1. Click save to revert to this content."
+
+  Scenario: revert layout to previous version
+    Given I have a layout with more than one version
+    When I edit a previous layout version
+    And I press "Save"
+    Then I should see "Layout saved below"
