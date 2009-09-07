@@ -35,6 +35,14 @@ Given /^I have a page with more than one version$/ do
   @page.save
 end
 
+Given /^I have a snippet with more than one version$/ do
+  @snippet = snippets(:first)
+  @snippet.save # version 1
+  @snippet.status = Status[:published]
+  @snippet.name = @snippet.name += "_version_2"
+  @snippet.save # version 2
+end
+
 When /^I edit the page$/ do
   visit admin_pages_path
   click_link @page.title
@@ -50,17 +58,26 @@ When /^I click the revert button$/ do
   click_button "Revert to Version 1"
 end
 
-When /^I edit a previous version$/ do
+When /^I edit a previous page version$/ do
   visit edit_admin_page_path(:id => @page.id, :version => 1)
 end
 
-Then /^I should be taken to the edit page$/ do
-  request.params.should == {"format"=>"html", "action"=>"edit", "id"=>"520095529", "version"=>"1", "controller"=>"admin/pages"}
-  response.should have_selector('h1', :content => "Edit Page")
+When /^I edit a previous snippet version$/ do
+  visit edit_admin_snippet_path(:id => @snippet.id, :version => 1)
 end
 
-Then /^the older content should be loaded$/ do
-  field_labeled("Page Title").value.should_not == @page.current.title
+Then /^I should be taken to the edit page$/ do
+  request.params["version"].should == "1"
+  request.params["action"].should == "edit"
+end
+
+Then /^the older (.+) content should be loaded$/ do |model|
+  case model
+  when "page"
+    field_labeled("Page Title").value.should_not == @page.current.title
+  when "snippet"
+    field_labeled("Name").value.should_not == @snippet.current.name
+  end
 end
 
 Then /^the content I am editing should be the draft$/ do

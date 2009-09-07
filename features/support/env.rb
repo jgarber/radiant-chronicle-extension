@@ -20,5 +20,5 @@ Cucumber::Rails::World.class_eval do
   datasets_directory "#{RADIANT_ROOT}/spec/datasets"
   self.datasets_database_dump_path = "#{Rails.root}/tmp/dataset"
  
-  dataset :pages_with_layouts, :users
+  dataset :pages_with_layouts, :users, :snippets
 end

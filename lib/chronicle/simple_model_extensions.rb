@@ -1,7 +1,7 @@
 module Chronicle::SimpleModelExtensions
   def self.included(base)
     base.class_eval do
-      simply_versioned
+      simply_versioned :exclude => [:lock_version]
       alias_method_chain :update_without_callbacks, :draft_versioning
       alias_method_chain :simply_versioned_create_version, :extra_version_attributes
       include ActiveRecord::Diff
