@@ -28,6 +28,13 @@ Given /^I have a (.*) page with a draft$/ do |status|
   @page.reload
 end
 
+Given /^I have a page with more than one version$/ do
+  Given "I have a published page with a draft"
+  @page.status = Status[:published]
+  @page.title = @page.title += " Version 2"
+  @page.save
+end
+
 When /^I edit the page$/ do
   visit admin_pages_path
   click_link @page.title
@@ -39,10 +46,26 @@ When /^I save it as (?:a )?(draft|published)$/ do |status|
   click_button "Save"
 end
 
+When /^I click the revert button$/ do
+  click_button "Revert to Version 1"
+end
+
+When /^I edit a previous version$/ do
+  visit edit_admin_page_path(:id => @page.id, :version => 1)
+end
+
+Then /^I should be taken to the edit page$/ do
+  request.params.should == {"format"=>"html", "action"=>"edit", "id"=>"520095529", "version"=>"1", "controller"=>"admin/pages"}
+  response.should have_selector('h1', :content => "Edit Page")
+end
+
+Then /^the older content should be loaded$/ do
+  field_labeled("Page Title").value.should_not == @page.current.title
+end
+
 Then /^the content I am editing should be the draft$/ do
   field_labeled("Page Title").value.should =~ /.+ Draft/
 end
-
 
 Then /^the page should be saved$/ do
   @page.current.title.should == "Edited"
@@ -56,10 +79,10 @@ Then /^change the live version$/ do
   @page.reload.title.should == "Edited"
 end
 
-Given /^I have a page with more than one version$/ do
-  Given "I have a published page with a draft"
-  @page.status = Status[:published]
-  @page.save
+When /^I view a previous version$/ do
+  visit admin_versions_path
+  click_link "Version 1"
+  @current_version = 1
 end
 
 When /^I view a version$/ do

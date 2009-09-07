@@ -10,15 +10,26 @@ describe Admin::PagesController do
   describe "editing a page" do
     integrate_views
     
+    before(:each) do
+      @page = pages(:first)
+      @page.save # version 1
+      @page.title = "Draft of First"
+      @page.status = Status[:draft]
+      @page.save # version 2
+    end
+    
     it "should load the current version for editing" do
-      page = pages(:first)
-      page.title = "Draft of First"
-      page.status = Status[:draft]
-      page.save
+      get :edit, :id => @page.id
       
-      get :edit, :id => page.id
+      assigns[:page].title.should == @page.current.title
+      assigns[:page].lock_version.should == @page.current.lock_version
+    end
+    
+    it "should load a specified version for editing" do
+      get :edit, :id => @page.id, :version => 1
       
-      assigns[:page].title.should == page.current.title
+      assigns[:page].title.should == @page.versions.first_version.instance.title
+      assigns[:page].lock_version.should == @page.current.lock_version
     end
     
     it "should have the version diff popup" do
@@ -68,9 +79,6 @@ describe Admin::PagesController do
     before :each do
       @page = pages(:first)
       @page.update_attributes(:title => "current", :status_id => Status[:draft].id)
-      # suppose the live page's lock_version gets ahead for some reason
-      @page.send(:update_with_lock, [@page.class.locking_column])
-      @page.reload.lock_version.should > @page.current.lock_version
     end
     
     it "should load the live version of the page" do
@@ -83,7 +91,6 @@ describe Admin::PagesController do
       flash[:notice].should == "The pages were successfully removed from the site."
     end
   end
-  
   
   def params_for_page(page)
     {"slug"=>page.slug, "class_name"=>page.class_name, "title"=>page.title, "breadcrumb"=>page.breadcrumb, "lock_version"=>page.lock_version, "parts_attributes"=>[{"name"=>"body", "filter_id"=>"", "content"=>"test"}], "status_id"=>page.status_id, "layout_id"=>page.layout_id, "parent_id"=>page.parent_id}

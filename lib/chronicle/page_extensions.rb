@@ -1,7 +1,7 @@
 module Chronicle::PageExtensions
   def self.included(base)
     base.class_eval do
-      simply_versioned :exclude => :parent_id
+      simply_versioned :exclude => [:parent_id, :lock_version]
       alias_method_chain :update, :parts_draft_versioning
       alias_method_chain :update_without_callbacks, :draft_versioning
       alias_method_chain :part, :versioned_association
