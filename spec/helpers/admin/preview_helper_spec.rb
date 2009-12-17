@@ -38,21 +38,28 @@ describe Admin::PreviewHelper do
   
     describe "with custom hostnames" do
       before(:each) do
-        Radiant::Config['dev.host'] = 'preview.mydomain.com'
-        Radiant::Config['live.host'] = 'cms.mydomain.com'
+        # Stub the live and dev hosts.  These get used all over, so
+        # a message expectation doesn't work.
+        Radiant::Config.stub!(:[]).and_return do |key|
+          if key == 'dev.host' 
+            "preview.mydomain.com"
+          elsif key == 'live.host'
+            "cms.mydomain.com"
+          end
+        end
       end
-    
+      
       it "should return the live URL for a page" do
         page = pages(:published)
         helper.site_preview_url(:live, page).should == "http://cms.mydomain.com/published/"
       end
-    
+      
       it "should return the dev URL for a page" do
         page = pages(:published)
         helper.site_preview_url(:dev, page).should == "http://preview.mydomain.com/published/"
       end
     end
-  
+    
     describe "with port number" do
       it "should return the live URL for a page" do
         @controller.request.port = 8080
