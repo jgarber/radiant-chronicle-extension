@@ -13,7 +13,11 @@ module Admin::PreviewHelper
     host = (@controller || self).request.host_with_port
     host = case mode
     when :dev
-      Radiant::Config['dev.host'] || ("dev." + host)
+      if host =~ /^localhost/
+        host
+      else
+        Radiant::Config['dev.host'] || ("dev." + host)
+      end
     when :live
       Radiant::Config['live.host'] || host
     end

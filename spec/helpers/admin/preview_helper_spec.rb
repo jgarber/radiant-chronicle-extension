@@ -60,6 +60,15 @@ describe Admin::PreviewHelper do
       end
     end
     
+    describe "with localhost" do
+      it "should return the localhost URL instead of appending 'dev.'" do
+        @controller.request.host = "localhost"
+        @controller.request.port = 3000
+        page = pages(:published)
+        helper.site_preview_url(:dev, page).should == "http://localhost:3000/published/"
+      end
+    end
+    
     describe "with port number" do
       it "should return the live URL for a page" do
         @controller.request.port = 8080
