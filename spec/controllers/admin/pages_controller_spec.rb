@@ -70,7 +70,28 @@ describe Admin::PagesController do
       response.should be_redirect
       session[:view_after_saving].should_not be_true
     end
+  end
+  
+  describe "saving a page" do
+    it "should clear the page cache when a published page is saved" do
+      Radiant::Cache.should_receive(:clear)
+      put :update, :id => page_id(:home), :page => {:breadcrumb => 'Homepage', "status_id"=>Status[:published].id.to_s}
+    end
     
+    it "should clear the page cache when a hidden page is saved" do
+      Radiant::Cache.should_receive(:clear)
+      put :update, :id => page_id(:home), :page => {:breadcrumb => 'Homepage', "status_id"=>Status[:hidden].id.to_s}
+    end
+        
+    it "should not clear the page cache when a draft page is saved" do
+      Radiant::Cache.should_not_receive(:clear)
+      put :update, :id => page_id(:home), :page => {:breadcrumb => 'Homepage', "status_id"=>Status[:draft].id.to_s}
+    end
+    
+    it "should not clear the page cache when a reviewed page is saved" do
+      Radiant::Cache.should_not_receive(:clear)
+      put :update, :id => page_id(:home), :page => {:breadcrumb => 'Homepage', "status_id"=>Status[:reviewed].id.to_s}
+    end
   end
   
   describe "deleting a page" do

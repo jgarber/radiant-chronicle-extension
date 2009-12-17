@@ -2,6 +2,7 @@ module Chronicle::ResourceControllerExtensions
   def self.included(base)
     base.class_eval do
       alias_method_chain :load_model, :version
+      alias_method_chain :clear_model_cache, :draft_awareness
     end
   end
   
@@ -18,6 +19,13 @@ module Chronicle::ResourceControllerExtensions
         else
           model
         end
+    end
+  end
+  
+  def clear_model_cache_with_draft_awareness
+    # Don't clear the cache if it's unpublished
+    unless model.status_id < Status[:published].id
+      clear_model_cache_without_draft_awareness
     end
   end
 end
