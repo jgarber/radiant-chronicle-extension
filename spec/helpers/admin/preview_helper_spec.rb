@@ -34,6 +34,16 @@ describe Admin::PreviewHelper do
       it "should not use the changed slug in live mode even when given the draft" do
         helper.site_preview_url(:live, @page.current).should == "http://test.host/published/"
       end
+      
+      it "should use the changed slug + child's changed slug in dev mode" do
+        @child = Page.create!(:title => "Child of published", :slug => "child-of-published", :breadcrumb => "Child of published", :parent => @page)
+        @child.status = Status[:draft]
+        @child.slug = "changed"
+        @child.save
+        @child.reload
+        
+        helper.site_preview_url(:dev, @child).should == "http://dev.test.host/changed/changed/"
+      end
     end
   
     describe "with custom hostnames" do

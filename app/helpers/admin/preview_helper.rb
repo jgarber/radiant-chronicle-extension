@@ -21,6 +21,6 @@ module Admin::PreviewHelper
     when :live
       Radiant::Config['live.host'] || host
     end
-    protocol + host + page.url
+    protocol + host + page.url(mode == :live)
   end
 end
